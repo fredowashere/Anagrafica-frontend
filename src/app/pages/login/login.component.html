@@ -1,0 +1,104 @@
+<div class="subscription-wrapper">
+
+    <input hidden class="subscription-switch" id="subscription-switch" type="checkbox">
+
+    <div class="subscription-container">
+
+        <div class="login-container">
+
+            <h2>Login</h2>
+
+            <app-input
+                name="token"
+                placeholder="Paste valid token here 📋"
+                [ngControl]="loginForm.controls.token"
+            ></app-input>
+
+            <app-input
+                type="select"
+                name="idAzienda" 
+                label="Id azienda"
+                [options]="aziende"
+                [ngControl]="loginForm.controls.idAzienda"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <button
+                class="btn btn-primary"
+                [disabled]="loginForm.invalid || !isValidToken($any(loginForm.controls.token.value))"
+                (click)="login()"
+            >
+                <i class="bi bi-send-fill"></i> Send
+            </button>
+        </div>
+
+        <div class="sign-up-container">
+
+            <h2>Impersonate</h2>
+
+            <app-input
+                name="token"
+                placeholder="Paste valid token here 📋"
+                [ngControl]="impersonateForm.controls.token"
+            ></app-input>
+
+            <app-input
+                type="select"
+                name="idAzienda2" 
+                label="Id azienda"
+                [options]="aziende"
+                [ngControl]="impersonateForm.controls.idAzienda"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                type="autocomplete"
+                name="idUtente"
+                label="Id utente"
+                placeholder="Cerca un utente"
+                [options]="utenti"
+                [formatter]="utentiFormatter"
+                [template]="rt"
+                [ngControl]="impersonateForm.controls.utente"
+                [floatingLabel]="true"
+            ></app-input>
+            <ng-template #rt let-r="result" let-t="term">
+                <div class="small">{{ r.idUtente }}</div>
+                <ngb-highlight [result]="r.cognome + ' ' + r.nome" [term]="t"></ngb-highlight>
+            </ng-template>
+
+            <app-input
+                type="tagger"
+                name="ruoli"
+                placeholder="Scegli i ruoli"
+                [options]="roles"
+                [formatter]="rolesFormatter"
+                [ngControl]="impersonateForm.controls.roles"
+            ></app-input>
+            
+            <button
+                class="btn btn-primary"
+                [disabled]="impersonateForm.invalid || !isValidToken($any(impersonateForm.controls.token.value))"
+                (click)="impersonateLogin()"
+            >
+                <i class="bi bi-send-fill"></i> Send
+            </button>
+        </div>
+
+    </div>
+
+    <div class="login-btn-wrapper">
+
+        <h3>Your user</h3>
+
+        <label class="btn btn-primary" for="subscription-switch">Login</label>
+    </div>
+
+    <div class="sign-up-btn-wrapper">
+
+        <h3>Another user</h3>
+
+        <label class="btn btn-primary" for="subscription-switch">Impersonate</label>
+    </div>
+
+</div>

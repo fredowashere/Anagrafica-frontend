@@ -1,0 +1,44 @@
+.home-grid {
+    display: grid;
+    place-content: center;
+    gap: 1rem;
+}
+
+.home-grid > * {
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+.home-grid > *:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #0002 !important;
+}
+
+.home-grid > *::after {
+    font-family:"Bootstrap-icons";
+    content: "\F136";
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    transition: all 400ms 200ms ease;
+}
+
+.home-grid > *:hover::after {
+    transform: scale(2);
+}
+
+@media (min-width: 600px) {
+
+    .home-grid {
+        grid-template-columns: auto auto;
+        gap: 3rem;
+    }
+
+    .home-grid > * {
+        aspect-ratio: 1 / 1;
+        width: 200px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+    }
+}
