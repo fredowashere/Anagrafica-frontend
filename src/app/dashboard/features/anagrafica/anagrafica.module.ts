@@ -6,6 +6,7 @@ import { AltreAziendeComponent } from './altre-aziende/altre-aziende.component';
 import { AltrePersoneComponent } from './altre-persone/altre-persone.component';
 import { AziendeGruppoComponent } from './aziende-gruppo/aziende-gruppo.component';
 import { PersoneOrganicoComponent } from './persone-organico/persone-organico.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 const routes: Routes = [
@@ -26,7 +27,8 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModule
   ]
 })
 export class AnagraficaModule { }

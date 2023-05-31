@@ -35,25 +35,25 @@ export class DashboardSidebarComponent {
       isActive: false,
       title: 'Personale in organico',
       icon: 'bi bi-people',
-      path: '/persone-organico',
+      path: '/anagrafica/persone-organico',
     },
     {
       isActive: false,
       title: 'Altri contatti',
       icon: 'bi bi-people-fill',
-      path: '/altre-persone',
+      path: '/anagrafica/altre-persone',
     },
     {
       isActive: false,
       title: 'Aziende del gruppo',
       icon: 'bi bi-buildings-fill',
-      path: '/aziende-gruppo',
+      path: '/anagrafica/aziende-gruppo',
     },
     {
       isActive: false,
       title: 'Clienti e fornitori',
       icon: 'bi bi-truck',
-      path: '/altre-aziende',
+      path: '/anagrafica/altre-aziende',
     },
   ];
 

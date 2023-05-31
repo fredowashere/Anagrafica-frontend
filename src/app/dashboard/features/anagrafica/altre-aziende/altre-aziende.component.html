@@ -1,1 +1,189 @@
-<p>altre-aziende works!</p>
+<div class="container-xxxl py-5 px-3">
+
+    <div class="text-center mb-4">
+        <h1 class="display-6">Gestione clienti/fornitori</h1>
+        <p class="lead">Da qui puoi cercare/creare/modificare i clienti/fornitori.</p>
+    </div>
+
+    <div class="col-md-8 mx-auto mb-4 card card-body shadow" style="z-index: 1">
+        
+        <h5>Filtri ricerca clienti/fornitori</h5>
+
+        <div class="flexgrid flexgrid--4">
+
+            <app-input
+                name="nomeAzienda"
+                label="Nome azienda"
+                [ngControl]="nomeAziendaCtrl"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                name="partitaIVA"
+                label="Partita IVA"
+                [ngControl]="partitaIVACtrl"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                type="autocomplete"
+                name="aziendaCorrispondente"
+                label="Azienda corrispondente"
+                [options]="aziende"
+                [ngControl]="aziendaCorrispondenteCtrl"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                type="autocomplete"
+                name="formaAziendale"
+                label="Forma aziendale"
+                [options]="formeAziendali"
+                [ngControl]="formaAziendaleCtrl"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                type="autocomplete"
+                name="businessUnit"
+                label="Business unit"
+                [options]="businessUnit"
+                [ngControl]="businessUnitCtrl"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                type="select"
+                name="tipoContratto"
+                label="Tipo contratto"
+                [options]="tipiContratti"
+                [ngControl]="tipoContrattoCtrl"
+                [floatingLabel]="true"
+            ></app-input>
+
+            <app-input
+                type="autocomplete"
+                name="settoreMerceologico"
+                label="Settore merceologico"
+                [options]="settoriMerceologici"
+                [ngControl]="settoreMerceologicoCtrl"
+                [floatingLabel]="true"
+            ></app-input>
+        </div>
+
+        <div class="text-center my-3">
+            <div class="btn-group shadow">
+
+                <button
+                    class="btn btn-outline-primary"
+                    (click)="nop()"
+                >
+                    <i class="bi bi-x-lg pe-2"></i>
+                    Reset
+                </button>
+
+                <button
+                    class="btn btn-primary"
+                    (click)="refresh$.next()"
+                >
+                    Cerca
+                    <ng-container *ngIf="isLoading; else searchIcon">
+                        <span class="spinner-border spinner-border-sm"></span>
+                    </ng-container>
+                    <ng-template #searchIcon>
+                        <i class="bi bi-search ps-2"></i>
+                    </ng-template>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-crud card card-body px-0 pb-0 pt-3 shadow">
+
+        <div class="table-plus">
+
+            <h5 class="table-plus__title">Tabella clienti/fornitori</h5>
+
+            <button
+                type="button"
+                class="btn btn-success shadow"
+                (click)="nop()"
+            >
+                <i class="bi bi-plus"></i>
+                Crea cliente/fornitore
+            </button>
+        </div>
+
+        <ng-template #emptyTmpl>
+            <div style="
+                display: grid;
+                gap: 0.75rem;
+                justify-items: center;
+                margin: 0 auto;
+                max-width: 400px;
+                padding: 3rem 1rem;
+                text-align: center;
+            ">
+
+                <ng-container *ngIf="init; else abc">
+                    <img class="img-fluid" style="max-height: 150px;" src="assets/images/no-results.svg" alt="nessun risultato trovato">
+                    <div class="lead">Nessun cliente/fornitore trovato.</div>
+                </ng-container>
+                <ng-template #abc>
+                    <ng-container *ngIf="!isLoading else loading">
+                        <div class="text-center text-muted">
+                            Clicca su <i class="bi bi-search ps-2"></i> per iniziare una ricerca.
+                        </div>
+                    </ng-container>
+                    <ng-template #loading>
+                        <span class="spinner-border"></span>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </ng-template>
+
+        <app-table
+            #dt
+            [thead]="thead"
+            [tbody]="tbody"
+            [animated]="true"
+            [items]="clienti"
+            [searchable]="[ 'descrizione' ]"
+            [paginated]="true"
+            [pageSize]="5"
+            [emptyTemplate]="emptyTmpl"
+        >
+
+            <ng-template #thead>
+                <th sortable="descrizione" (sort)="dt.sort($event)">Descrizione</th>
+                <th style="width: 10rem"></th>
+            </ng-template>
+
+            <ng-template #tbody let-item let-term$="term$">
+                <td data-label="Descrizione">
+                    <ngb-highlight [result]="item.descrizione" [term]="$any(term$ | async)"/>
+                </td>
+                <td>
+                    <div class="d-flex gap-2 justify-content-center">
+
+                        <button
+                            type="button"
+                            class="btn btn-warning shadow"
+                            (click)="nop()"
+                        >
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger shadow"
+                            (click)="nop()"
+                        >
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                </td>
+            </ng-template>
+        </app-table>
+    </div>
+</div>

@@ -28,6 +28,10 @@
     transform: scale(2);
 }
 
+.home-grid > * h5 {
+    font-size: clamp(1rem, 1vmax, 2rem);
+}
+
 .home-grid > * i {
     font-size: clamp(2.5rem, 3vmax, 6rem);
 }
