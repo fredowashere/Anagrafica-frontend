@@ -5,6 +5,7 @@
 }
 
 .home-grid > * {
+    color: rgba(var(--app-primary_500), 1);
     cursor: pointer;
     transition: all 200ms ease;
 }
@@ -27,6 +28,10 @@
     transform: scale(2);
 }
 
+.home-grid > * i {
+    font-size: clamp(2.5rem, 3vmax, 6rem);
+}
+
 @media (min-width: 600px) {
 
     .home-grid {
@@ -36,7 +41,7 @@
 
     .home-grid > * {
         aspect-ratio: 1 / 1;
-        width: 200px;
+        width: clamp(200px, 10vmax, 600px);
         display: grid;
         place-items: center;
         text-align: center;
