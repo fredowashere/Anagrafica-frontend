@@ -91,14 +91,8 @@ export class AnagraficaService {
     return this.http.get<any>(url, { params })
       .pipe(
         map(response => {
-
           if (!response.risultati) return [];
-
-          // The response is full of garbage, let's clean it
-          if (Array.isArray(response.risultati)) {
-            return response.risultati;
-          }
-
+          if (Array.isArray(response.risultati)) return response.risultati;
           return [];
         })
       );
