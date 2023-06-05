@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
 import { AnagraficaService } from '../services/anagrafica.service';
 import { Cliente } from '../models/cliente';
+import { PrepareObject } from '../models/prepare-object';
 
 @Component({
   selector: 'app-altre-aziende',
@@ -20,26 +21,54 @@ export class AltreAziendeComponent {
   nomeAziendaCtrl = new FormControl();
   partitaIVACtrl = new FormControl();
   
-  aziende = [];
+  aziende: PrepareObject[] = [];
   aziendaCorrispondenteCtrl = new FormControl();
+  genericFormatter = (po: PrepareObject) => po.descrizione;
 
-  formeAziendali = [];
+  formeAziendali: PrepareObject[] = [];
   formaAziendaleCtrl = new FormControl();
 
-  businessUnit = [];
+  businessUnit: PrepareObject[] = [];
   businessUnitCtrl = new FormControl();
 
-  tipiContratti = [];
-  tipoContrattoCtrl = new FormControl();
+  tipi: { value: number | null, text: string }[] = [];
+  tipoCtrl = new FormControl();
 
-  settoriMerceologici = [];
+  settoriMerceologici: PrepareObject[] = [];
   settoreMerceologicoCtrl = new FormControl();
+
+  form = new FormGroup({
+    nomeAzienda: this.nomeAziendaCtrl,
+    partitaIVA: this.partitaIVACtrl,
+    aziendaCorrispondente: this.aziendaCorrispondenteCtrl,
+    formaAziendale: this.formaAziendaleCtrl,
+    businessUnit: this.businessUnitCtrl,
+    tipo: this.tipoCtrl,
+    settoreMerceologico: this.settoreMerceologicoCtrl
+  });
 
   constructor(
     private anagraficaService: AnagraficaService
   ) {}
 
   ngOnInit() {
+
+    this.anagraficaService
+      .terzePartiPrepareSearchFilters()
+      .subscribe(formLists => {
+
+        this.aziende = formLists.AZIENDE_GRUPPO;
+        this.formeAziendali = formLists.RAGIONI_SOCIALI;
+        this.businessUnit = formLists.BUSINESS_UNIT;
+        this.settoriMerceologici = formLists.SETTORI_MERCEOLOGICI;
+
+        this.tipi = formLists.TIPI_TERZE_PARTI
+          .map(({ id, descrizione }) =>
+            ({ value: id, text: descrizione })
+          );
+        this.tipi.unshift({ value: null, text: "Tutti" });
+      });
+
     merge(
       of({}), // Launch as soon as the user lands
       this.refresh$
@@ -48,7 +77,15 @@ export class AltreAziendeComponent {
         takeUntil(this.destroy$),
         tap(() => this.isLoading = true),
         switchMap(() =>
-          this.anagraficaService.terzePartiSearch({})
+          this.anagraficaService.terzePartiSearch({
+            descrizione: this.nomeAziendaCtrl.value,
+            idBu: this.businessUnitCtrl.value?.id,
+            idTipoTerzeParti: this.tipoCtrl.value?.id,
+            idSettoreMerceologico: this.settoreMerceologicoCtrl.value?.id,
+            idRagioneSociale: this.formaAziendaleCtrl.value?.id,
+            idAziendaGruppo: this.aziendaCorrispondenteCtrl.value?.id,
+            partitaIva: this.partitaIVACtrl.value?.id,
+          })
         ),
         tap(response => {
           this.clienti = response;

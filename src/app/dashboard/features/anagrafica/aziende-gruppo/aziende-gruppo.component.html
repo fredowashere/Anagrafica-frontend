@@ -5,7 +5,7 @@
         <p class="lead">Da qui puoi cercare/creare/modificare le aziende del gruppo.</p>
     </div>
 
-    <div class="col-md-8 mx-auto mb-4 card card-body shadow" style="z-index: 1">
+    <div class="col-md-8 mx-auto mb-4 card card-body shadow">
         
         <h5>Filtri ricerca aziende</h5>
 
@@ -23,15 +23,22 @@
                 name="formaAziendale"
                 label="Forma aziendale"
                 [options]="formeAziendali"
+                [template]="genericTemplate"
+                [formatter]="genericFormatter"
                 [ngControl]="formaAziendaleCtrl"
                 [floatingLabel]="true"
             ></app-input>
+            <ng-template #genericTemplate let-r="result" let-t="term">
+                <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
+            </ng-template>
 
             <app-input
                 type="autocomplete"
                 name="tipologiaContratto"
                 label="Tipologia contratto"
                 [options]="tipologieContratti"
+                [template]="genericTemplate"
+                [formatter]="genericFormatter"
                 [ngControl]="tipologiaContrattoCtrl"
                 [floatingLabel]="true"
             ></app-input>
@@ -41,6 +48,8 @@
                 name="settoreMerceologico"
                 label="Settore merceologico"
                 [options]="settoriMerceologici"
+                [template]="genericTemplate"
+                [formatter]="genericFormatter"
                 [ngControl]="settoreMerceologicoCtrl"
                 [floatingLabel]="true"
             ></app-input>
@@ -51,7 +60,7 @@
 
                 <button
                     class="btn btn-outline-primary"
-                    (click)="nop()"
+                    (click)="form.reset(); refresh$.next();"
                 >
                     <i class="bi bi-x-lg pe-2"></i>
                     Reset
@@ -73,7 +82,7 @@
         </div>
     </div>
 
-    <div class="app-crud card card-body px-0 pb-0 pt-3 shadow">
+    <div class="card card-body px-0 pb-0 pt-3 shadow">
 
         <div class="table-plus">
 

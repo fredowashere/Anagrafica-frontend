@@ -5,7 +5,7 @@
         <p class="lead">Da qui puoi cercare/creare/modificare il personale in organico.</p>
     </div>
 
-    <div class="col-md-8 mx-auto mb-4 card card-body shadow" style="z-index: 1">
+    <div class="col-md-8 mx-auto mb-4 card card-body shadow">
         
         <h5>Filtri ricerca persone</h5>
 
@@ -46,9 +46,14 @@
                 name="businessUnit"
                 label="Business unit"
                 [options]="businessUnit"
+                [template]="buTmpl"
+                [formatter]="businessUnitFormatter"
                 [ngControl]="businessUnitCtrl"
                 [floatingLabel]="true"
             ></app-input>
+            <ng-template #buTmpl let-r="result" let-t="term">
+                <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
+            </ng-template>
         </div>
 
         <div class="text-center my-3">
@@ -56,7 +61,7 @@
 
                 <button
                     class="btn btn-outline-primary"
-                    (click)="nop()"
+                    (click)="form.reset(); this.refresh$.next();"
                 >
                     <i class="bi bi-x-lg pe-2"></i>
                     Reset
@@ -78,7 +83,7 @@
         </div>
     </div>
 
-    <div class="app-crud card card-body px-0 pb-0 pt-3 shadow">
+    <div class="card card-body px-0 pb-0 pt-3 shadow">
 
         <div class="table-plus">
 

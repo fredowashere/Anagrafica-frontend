@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
 import { AnagraficaService } from '../services/anagrafica.service';
 import { Azienda } from '../models/azienda';
+import { PrepareObject } from '../models/prepare-object';
 
 @Component({
   selector: 'app-aziende-gruppo',
@@ -19,26 +20,58 @@ export class AziendeGruppoComponent {
 
   descrizioneCtrl = new FormControl();
 
-  formeAziendali = [];
+  formeAziendali: PrepareObject[] = [];
   formaAziendaleCtrl = new FormControl();
+  genericFormatter = (po: PrepareObject) => po.descrizione;
   
-  tipologieContratti = [];
+  tipologieContratti: PrepareObject[] = [];
   tipologiaContrattoCtrl = new FormControl();
 
-  settoriMerceologici = [];
+  settoriMerceologici: PrepareObject[] = [];
   settoreMerceologicoCtrl = new FormControl();
+
+  form = new FormGroup({
+    descrizione: this.descrizioneCtrl,
+    formaAziendale: this.formaAziendaleCtrl,
+    tipologiaContratto: this.tipologiaContrattoCtrl,
+    settoreMerceologico: this.settoreMerceologicoCtrl
+  });
 
   constructor(
     private anagraficaService: AnagraficaService
   ) {}
 
   ngOnInit() {
+
+    this.anagraficaService
+      .prepareRagioniSociali()
+      .subscribe(ragioniSociali =>
+        this.formeAziendali = ragioniSociali
+      );
+
+    this.anagraficaService
+      .prepareTipologieContratto()
+      .subscribe(tipologieContratti =>
+        this.tipologieContratti = tipologieContratti
+      );
+
+    this.anagraficaService
+      .prepareSettoriMerceologici()
+      .subscribe(settoriMerceologici =>
+        this.settoriMerceologici = settoriMerceologici
+      );
+
     this.refresh$
       .pipe(
         takeUntil(this.destroy$),
         tap(() => this.isLoading = true),
         switchMap(() =>
-          this.anagraficaService.aziendeGruppo({})
+          this.anagraficaService.aziendeGruppo({
+            descrizione: this.descrizioneCtrl.value,
+            idRagioneSociale: this.formaAziendaleCtrl.value?.id,
+            idSettoreMerceologico: this.settoreMerceologicoCtrl.value?.id,
+            idTipologiaContratto: this.tipologiaContrattoCtrl.value?.id
+          })
         ),
         tap(response => {
           this.aziende = response;
