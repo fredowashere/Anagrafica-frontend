@@ -42,18 +42,44 @@ export class PersoneOrganicoService {
     }
 
     prepareBusinessUnit() {
-
-        const url = `${environment.scaiRoot}/anagrafica-service/prepareBusinessUnit`;
         const { idAzienda } = this.authService.user;
-
-        const params = new HttpParams()
-            .set("idAziendaSelezionata", idAzienda + "");
-
-        return this.http.get<PrepareObject[]>(url, { params: params });
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareBusinessUnit?idAziendaSelezionata=${idAzienda}`;
+        return this.http.get<PrepareObject[]>(url);
     }
 
     prepareTipiUtente() {
         const url = `${environment.scaiRoot}/anagrafica-service/prepareTipiUtente`;
         return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareTitoliInsertPerson() {
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareTitoliInsertPerson`;
+        return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareProvince() {
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareProvince`;
+        return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareStatoCivile() {
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareStatoCivile`;
+        return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareTitoliStudio() {
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareTitoliStudio`;
+        return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareProfiloFunzioni() {
+        const url = `${environment.scaiRoot}/anagrafica-service/pepareProfiloFunzioni`;
+        return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareAbilitazioni() {
+        const { idAzienda } = this.authService.user;
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareAbilitazioni?idAzienda=${idAzienda}&aziendaDescr=`
+        return this.http.get(url);
     }
 }

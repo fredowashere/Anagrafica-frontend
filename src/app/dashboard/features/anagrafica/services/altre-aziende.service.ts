@@ -46,13 +46,8 @@ export class AltreAziendeService {
     }
 
     terzePartiPrepareSearchFilters() {
-
-        const url = `${environment.scaiRoot}/anagrafica-service/terzeParti/prepareSearchFilters`;
         const { idAzienda } = this.authService.user;
-
-        const params = new HttpParams()
-            .append("idAziendaSelezionata", idAzienda + "");
-
-        return this.http.get<SearchFilters>(url, { params });
+        const url = `${environment.scaiRoot}/anagrafica-service/terzeParti/prepareSearchFilters?idAziendaSelezionata=${idAzienda}`;
+        return this.http.get<SearchFilters>(url);
     }
 }

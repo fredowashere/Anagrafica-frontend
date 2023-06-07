@@ -1,0 +1,119 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{ readonlyItem ? "Dettaglio" : itemToUpdate ? "Modifica" : "Creazione" }} azienda gruppo</h4>
+    <button type="button" class="btn-close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+    <ng-container *ngIf="loading; else showContent">
+        <div class="my-5 text-center">
+            <div class="spinner-border"></div>
+        </div>
+    </ng-container>
+    <ng-template #showContent>
+
+        <ng-template #autocompleteTemplate let-r="result" let-t="term">
+            <span class="text-muted pe-2">
+                <ngb-highlight [result]="r.id" [term]="t"></ngb-highlight>
+            </span>
+            <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
+        </ng-template>
+
+        <nav class="wiz" ngbNav #nav="ngbNav" [destroyOnHide]="false">
+
+            <ng-container [ngbNavItem]="1">
+                <a ngbNavLink class="wiz__step">
+                    <div class="wiz__title d-md-none">Step 1</div>
+                    <div class="wiz__descr">[[ descr 1 ]]</div>
+                </a>
+                <ng-template ngbNavContent>
+
+                    <form class="p-2 my-4" autocomplete="off" novalidate>
+
+                        <div class="flexgrid flexgrid--3">
+                        </div>
+                    </form>
+
+                    <div class="text-end">
+                        <button
+                            class="btn btn-outline-primary"
+                            [disabled]="!readonlyItem && stage1Form.invalid"
+                            (click)="nav.select(2)"
+                        >
+                            Prossimo <i class="bi bi-caret-right-fill"></i>
+                        </button>
+                    </div>
+                </ng-template>
+            </ng-container>
+
+            <ng-container [ngbNavItem]="2" [disabled]="!readonlyItem && stage1Form.invalid">
+                <a ngbNavLink class="wiz__step">
+                    <div class="wiz__title d-md-none">Step 2</div>
+                    <div class="wiz__descr">[[ descr 2 ]]</div>
+                </a>
+                <ng-template ngbNavContent>
+
+                    <form class="p-2 my-4" autocomplete="off" novalidate>
+
+                        <div class="flexgrid flexgrid--2">
+                        </div>
+                    </form>
+
+                    <div class="d-flex justify-content-between">
+
+                        <button
+                            class="btn btn-outline-primary"
+                            (click)="nav.select(1)"
+                        >
+                            <i class="bi bi-caret-left-fill"></i> Precedente
+                        </button>
+
+                        <button
+                            class="btn btn-outline-primary"
+                            [disabled]="!readonlyItem && (stage1Form.invalid || stage2Form.invalid)"
+                            (click)="nav.select(3)"
+                        >
+                            Prossimo <i class="bi bi-caret-right-fill"></i>
+                        </button>
+                    </div>
+                </ng-template>
+            </ng-container>
+
+            <ng-container [ngbNavItem]="3" [disabled]="!readonlyItem && (stage1Form.invalid || stage2Form.invalid)">
+                <a ngbNavLink class="wiz__step">
+                    <div class="wiz__title d-md-none">Step 3</div>
+                    <div class="wiz__descr">[[ descr 3 ]]</div>
+                </a>
+                <ng-template ngbNavContent>
+
+                    <form class="p-2 my-4" autocomplete="off" novalidate>
+
+                        <div class="flexgrid flexgrid--3 mb-3">
+                        </div>
+
+                        <div *ngIf="!readonlyItem" class="text-center pt-3">
+                            <button
+                                class="btn btn-lg btn-primary shadow"
+                                [disabled]="stage1Form.invalid || stage2Form.invalid || stage3Form.invalid"
+                                (click)="createUpdate()"
+                            >
+                                Salva <i class="bi bi-save-fill"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <button
+                        class="btn btn-outline-primary"
+                        (click)="nav.select(2)"
+                    >
+                        <i class="bi bi-caret-left-fill"></i> Precedente
+                    </button>
+                </ng-template>
+            </ng-container>
+        </nav>
+
+        <div *ngIf="!readonlyItem" class="text-muted px-3 pt-2 mb-2">
+            Per proseguire è necessario compilare tutti i campi obbligatori (*)
+        </div>
+        
+        <div [ngbNavOutlet]="nav"></div>
+    </ng-template>
+</div>

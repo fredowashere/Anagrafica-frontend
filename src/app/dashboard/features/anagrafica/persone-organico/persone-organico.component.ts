@@ -4,6 +4,8 @@ import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
 import { Person } from '../models/persona';
 import { PrepareObject } from '../models/prepare-object';
 import { PersoneOrganicoService } from '../services/persone-organico.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PersoneOrganicoCreazioneModifica } from '../dialogs/persone-organico-creazione-modifica/persone-organico-creazione-modifica.component';
 
 @Component({
   selector: 'app-persone-organico',
@@ -37,7 +39,8 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private personeOrganicoService: PersoneOrganicoService
+    private personeOrganicoService: PersoneOrganicoService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit() {
@@ -89,7 +92,36 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
     this.destroy$.next();
   }
 
-  nop() {}
+  getCreazioneModificaDialog() {
+    return this.modalService.open(
+      PersoneOrganicoCreazioneModifica,
+      { size: 'lg', centered: true }
+    );
+  }
+
+  async create() {
+    
+    const modalRef = this.getCreazioneModificaDialog();
+    await modalRef.result;
+
+    this.refresh$.next();
+  }
+
+  async update(item: Person) {
+
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+
+    this.refresh$.next();
+  }
+
+  async readonly(item: Person) {
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.readonlyItem = true;
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+  }
 
 }
 
