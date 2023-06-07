@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FindPersonParam, Person } from '../models/persona';
 import { AuthService } from 'src/app/services/auth.service';
-import { AltrePersoneParam, Contatto, DettaglioContatto } from '../models/contatto';
+import { AltrePersoneParam, Contatto, DettaglioContatto, SaveContattoParam } from '../models/contatto';
 import { Observable, map } from 'rxjs';
 import { Azienda, AziendeGruppoParam } from '../models/azienda';
 import { Cliente, TerzePartiSearchParam } from '../models/cliente';
@@ -176,6 +176,11 @@ export class AnagraficaService {
   eliminaContatto(idUtente: number) {
     const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/eliminaContatto`;
     return this.http.post(url, idUtente);
+  }
+
+  saveContatto(contatto: SaveContattoParam) {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/saveContatto`;
+    return this.http.post(url, contatto);
   }
 
 }

@@ -24,8 +24,7 @@
                     <div class="wiz__descr">Informazioni contatto</div>
                 </a>
                 <ng-template ngbNavContent>
-
-                    <form class="p-2" novalidate>
+                    <form class="p-2" autocomplete="off" novalidate>
 
                         <div class="flexgrid flexgrid--3">
 
@@ -111,8 +110,7 @@
                     <div class="wiz__descr">Recapiti professionali</div>
                 </a>
                 <ng-template ngbNavContent>
-
-                    <form class="p-2" novalidate>
+                    <form class="p-2" autocomplete="off" novalidate>
 
                         <div class="flexgrid flexgrid--2 mb-3">
 
@@ -234,8 +232,8 @@
                     <div class="wiz__descr">Recapiti personali</div>
                 </a>
                 <ng-template ngbNavContent>
+                    <form class="p-2" autocomplete="off" novalidate>
 
-                    <form class="p-2" novalidate>
                         <div class="flexgrid flexgrid--3 mb-3">
 
                             <app-input
@@ -267,6 +265,7 @@
                             <button
                                 class="btn btn-lg btn-primary shadow"
                                 [disabled]="stage1Form.invalid || stage2Form.invalid || stage3Form.invalid"
+                                (click)="createUpdate()"
                             >
                                 Salva <i class="bi bi-save-fill"></i>
                             </button>

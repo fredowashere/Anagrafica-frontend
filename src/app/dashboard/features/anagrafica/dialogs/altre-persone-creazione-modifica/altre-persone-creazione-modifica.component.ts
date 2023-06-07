@@ -9,6 +9,7 @@ import { combineLatest, lastValueFrom, map } from "rxjs";
 import { AnagraficaService } from "../../services/anagrafica.service";
 import { cellulareRegExp, telefonoRegExp } from "src/app/utils/regex";
 import { lookmap, singlifyLookmap } from "src/app/utils/object";
+import { ToastService } from "src/app/services/toast.service";
 
 @Component({
     standalone: true,
@@ -29,7 +30,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     cognomeCtrl = new FormControl("", [ Validators.required ]);
     nomeCtrl = new FormControl("", [ Validators.required ]);
     titoli: { value: number, text: string }[] = [];
-    titoloCtrl = new FormControl<number>(1);
+    titoloCtrl = new FormControl(1);
     aziende: PrepareObject[] = [];
     aziendaCtrl = new FormControl<PrepareObject | null>(null, [ Validators.required ]);
     autocompleteFormatter = (po: PrepareObject) => po.descrizione;
@@ -82,7 +83,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     constructor(
         public activeModal: NgbActiveModal,
-        private anagraficaService: AnagraficaService
+        private anagraficaService: AnagraficaService,
+        private toaster: ToastService
     ) {}
 
     async ngOnInit() {
@@ -200,6 +202,90 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             this.emailPrivataCtrl.setValue(this.contatto.emailPrivata);
             
             this.loading = false;
+
+            this.stage1Form.markAllAsTouched();
+            this.stage2Form.markAllAsTouched();
+            this.stage3Form.markAllAsTouched();
+        }
+    }
+
+    createUpdate() {
+        if (this.itemToUpdate) this.update();
+        else this.create();
+    }
+
+    async update() {
+
+        if (!this.contatto || this.stage1Form.invalid || this.stage2Form.invalid || this.stage3Form.invalid) return;
+
+        try {
+
+            await lastValueFrom(
+                this.anagraficaService.saveContatto({
+                    idUtente: this.contatto.idUtente,
+                    idTitolo: this.titoloCtrl.value!,
+                    cognome: this.cognomeCtrl.value!,
+                    nome: this.nomeCtrl.value!,
+                    idTerzaParte: this.aziendaCtrl.value?.id!,
+                    idReferente: this.referenteCtrl.value?.id!,
+                    valido: this.auguriCtrl.value!,
+                    tecnoCode: this.tecnoCodeCtrl.value,
+                    telefono: this.telefonoCtrl.value,
+                    cellulare: this.cellulareCtrl.value,
+                    email: this.emailCtrl.value,
+                    referenteTerzaParte: this.referenteClienteCtrl.value!,
+                    indirizzo: this.indirizzoCtrl.value?.descrizione!,
+                    comune: this.cittaCtrl.value,
+                    cap: this.capCtrl.value,
+                    note: this.noteCtrl.value,
+                    telefonoPrivata: this.telefonoPrivataCtrl.value,
+                    cellularePrivata: this.cellularePrivataCtrl.value,
+                    emailPrivata: this.emailPrivataCtrl.value
+                })
+            );
+
+            this.toaster.show("Contatto modificato con successo!", { classname: "bg-success text-light" });
+            this.activeModal.close();
+        }
+        catch(ex) {
+            this.toaster.show("Si è verificato un errore durante la modifica del contatto. Contattare il supporto tecnico.", { classname: "bg-danger text-light" });
+        }
+    }
+
+    async create() {
+
+        if (this.stage1Form.invalid || this.stage2Form.invalid || this.stage3Form.invalid) return;
+
+        try {
+
+            await lastValueFrom(
+                this.anagraficaService.saveContatto({
+                    idTitolo: this.titoloCtrl.value!,
+                    cognome: this.cognomeCtrl.value!,
+                    nome: this.nomeCtrl.value!,
+                    idTerzaParte: this.aziendaCtrl.value?.id!,
+                    idReferente: this.referenteCtrl.value?.id!,
+                    valido: this.auguriCtrl.value!,
+                    tecnoCode: this.tecnoCodeCtrl.value,
+                    telefono: this.telefonoCtrl.value,
+                    cellulare: this.cellulareCtrl.value,
+                    email: this.emailCtrl.value,
+                    referenteTerzaParte: this.referenteClienteCtrl.value!,
+                    indirizzo: this.indirizzoCtrl.value?.descrizione!,
+                    comune: this.cittaCtrl.value,
+                    cap: this.capCtrl.value,
+                    note: this.noteCtrl.value,
+                    telefonoPrivata: this.telefonoPrivataCtrl.value,
+                    cellularePrivata: this.cellularePrivataCtrl.value,
+                    emailPrivata: this.emailPrivataCtrl.value
+                })
+            );
+
+            this.toaster.show("Contatto creato con successo!", { classname: "bg-success text-light" });
+            this.activeModal.close();
+        }
+        catch(ex) {
+            this.toaster.show("Si è verificato un errore durante la creazione del contatto. Contattare il supporto tecnico.", { classname: "bg-danger text-light" });
         }
     }
 }

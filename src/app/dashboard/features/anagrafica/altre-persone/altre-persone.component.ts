@@ -84,14 +84,20 @@ export class AltrePersoneComponent {
   }
 
   async create() {
+    
     const modalRef = this.getCreazioneModificaDialog();
     await modalRef.result;
+
+    this.refresh$.next();
   }
 
   async update(item: Contatto) {
+
     const modalRef = this.getCreazioneModificaDialog();
     modalRef.componentInstance.itemToUpdate = item;
     await modalRef.result;
+
+    this.refresh$.next();
   }
 
   async readonly(item: Contatto) {
@@ -112,12 +118,18 @@ export class AltrePersoneComponent {
     modalRef.componentInstance.name = nome;
     await modalRef.result;
 
-    await lastValueFrom(
-      this.anagraficaService.eliminaContatto(item.idUtente)
-    );
+    try {
 
-    this.toaster.show(nome + " eliminato con successo!", { classname: 'bg-success text-light' });
-    this.refresh$.next();
+      await lastValueFrom(
+        this.anagraficaService.eliminaContatto(item.idUtente)
+      );
+
+      this.toaster.show(nome + " eliminato con successo!", { classname: "bg-success text-light" });
+      this.refresh$.next();
+    }
+    catch(ex) {
+      this.toaster.show("Si è verificato un errore durante l'eliminazione di " + nome + ". Contattare il supporto tecnico.", { classname: "bg-danger text-light" });
+    }
   }
 
 }
