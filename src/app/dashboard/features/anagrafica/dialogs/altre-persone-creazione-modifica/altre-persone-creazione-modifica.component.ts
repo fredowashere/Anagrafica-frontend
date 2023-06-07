@@ -6,7 +6,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { PrepareObject } from "../../models/prepare-object";
 import { combineLatest, lastValueFrom, map } from "rxjs";
-import { AnagraficaService } from "../../services/anagrafica.service";
+import { AltrePersoneService } from "../../services/altre-persone.service";
 import { cellulareRegExp, telefonoRegExp } from "src/app/utils/regex";
 import { lookmap, singlifyLookmap } from "src/app/utils/object";
 import { ToastService } from "src/app/services/toast.service";
@@ -83,7 +83,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     constructor(
         public activeModal: NgbActiveModal,
-        private anagraficaService: AnagraficaService,
+        private altrePersonseService: AltrePersoneService,
         private toaster: ToastService
     ) {}
 
@@ -94,7 +94,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         // Get autocomplete lists
         [ this.titoli, this.aziende, this.referenti ] = await lastValueFrom(
             combineLatest([
-                this.anagraficaService
+                this.altrePersonseService
                     .prepareTitoli()
                     .pipe(
                         map(titoli =>
@@ -103,8 +103,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                             )
                         )
                     ),
-                this.anagraficaService.prepareAziendeClientiTerzeParti(),
-                this.anagraficaService.prepareReferenti()
+                this.altrePersonseService.prepareAziendeClientiTerzeParti(),
+                this.altrePersonseService.prepareReferenti()
             ])
         );
 
@@ -125,7 +125,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                 }
 
                 const indirizzoInfo = await lastValueFrom(
-                    this.anagraficaService.prepareIndirizzoInfo({
+                    this.altrePersonseService.prepareIndirizzoInfo({
                         idTerzaParte: this.aziendaCtrl.value?.id!,
                         indirizzo: indirizzo.descrizione
                     })
@@ -149,7 +149,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                 }
 
                 this.indirizzi = await lastValueFrom(
-                    this.anagraficaService.prepareIndirizzo(azienda.id)
+                    this.altrePersonseService.prepareIndirizzo(azienda.id)
                 );
 
                 if (this.indirizzi.length === 1)
@@ -162,7 +162,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             this.loading = true;
 
             this.contatto = await lastValueFrom(
-                this.anagraficaService.dettaglioContatto(this.itemToUpdate.idUtente)
+                this.altrePersonseService.dettaglioContatto(this.itemToUpdate.idUtente)
             );
 
             // Stage 1
@@ -186,7 +186,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             this.referenteClienteCtrl.setValue(this.contatto.referenteTerzaParte);
 
             this.indirizzi = await lastValueFrom(
-                this.anagraficaService.prepareIndirizzo(this.contatto.idTerzaParte)
+                this.altrePersonseService.prepareIndirizzo(this.contatto.idTerzaParte)
             );
             const indirizzo = this.indirizzi.find(indirizzo => indirizzo.descrizione === this.contatto!.indirizzo);
             if (indirizzo) this.indirizzoCtrl.setValue(indirizzo);
@@ -221,7 +221,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         try {
 
             await lastValueFrom(
-                this.anagraficaService.saveContatto({
+                this.altrePersonseService.saveContatto({
                     idUtente: this.contatto.idUtente,
                     idTitolo: this.titoloCtrl.value!,
                     cognome: this.cognomeCtrl.value!,
@@ -259,7 +259,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         try {
 
             await lastValueFrom(
-                this.anagraficaService.saveContatto({
+                this.altrePersonseService.saveContatto({
                     idTitolo: this.titoloCtrl.value!,
                     cognome: this.cognomeCtrl.value!,
                     nome: this.nomeCtrl.value!,

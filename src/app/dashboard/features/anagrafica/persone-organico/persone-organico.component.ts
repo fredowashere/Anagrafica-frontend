@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AnagraficaService } from '../services/anagrafica.service';
 import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
 import { Person } from '../models/persona';
 import { PrepareObject } from '../models/prepare-object';
+import { PersoneOrganicoService } from '../services/persone-organico.service';
 
 @Component({
   selector: 'app-persone-organico',
@@ -37,12 +37,12 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private anagraficaService: AnagraficaService
+    private personeOrganicoService: PersoneOrganicoService
   ) {}
 
   ngOnInit() {
 
-    this.anagraficaService
+    this.personeOrganicoService
       .prepareTipiUtente()
       .subscribe(tipiUtente => {
         this.tipiUtente = tipiUtente
@@ -52,7 +52,7 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
         this.tipiUtente.unshift({ value: null, text: "Tutti" });
       });
 
-    this.anagraficaService
+    this.personeOrganicoService
       .prepareBusinessUnit()
       .subscribe(businessUnit => {
         this.businessUnit = businessUnit
@@ -68,7 +68,7 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         tap(() => this.isLoading = true),
         switchMap(() =>
-          this.anagraficaService.findPerson({
+          this.personeOrganicoService.findPerson({
             cognome: this.cognomeCtrl.value,
             nome: this.nomeCtrl.value,
             numeroBadge: this.nrBadgeCtrl.value,

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subject, lastValueFrom, merge, of, switchMap, takeUntil, tap } from 'rxjs';
-import { AnagraficaService } from '../services/anagrafica.service';
 import { Contatto } from '../models/contatto';
 import { PrepareObject } from '../models/prepare-object';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AltrePersoneCreazioneModifica } from '../dialogs/altre-persone-creazione-modifica/altre-persone-creazione-modifica.component';
 import { EliminazioneDialog } from '../../commons/dialogs/eliminazione.dialog';
 import { ToastService } from 'src/app/services/toast.service';
+import { AltrePersoneService } from '../services/altre-persone.service';
 
 @Component({
   selector: 'app-altre-persone',
@@ -36,14 +36,14 @@ export class AltrePersoneComponent {
   });
 
   constructor(
-    private anagraficaService: AnagraficaService,
+    private altrePersoneService: AltrePersoneService,
     private modalService: NgbModal,
     private toaster: ToastService
   ) {}
 
   ngOnInit() {
 
-    this.anagraficaService
+    this.altrePersoneService
       .prepareReferenti()
       .subscribe(referenti =>
         this.referenti = referenti
@@ -57,7 +57,7 @@ export class AltrePersoneComponent {
         takeUntil(this.destroy$),
         tap(() => this.isLoading = true),
         switchMap(() =>
-          this.anagraficaService.altrePersone({
+          this.altrePersoneService.altrePersone({
             cognome: this.cognomeCtrl.value,
             nome: this.nomeCtrl.value,
             idReferente: this.referenteCtrl.value?.id
@@ -121,7 +121,7 @@ export class AltrePersoneComponent {
     try {
 
       await lastValueFrom(
-        this.anagraficaService.eliminaContatto(item.idUtente)
+        this.altrePersoneService.eliminaContatto(item.idUtente)
       );
 
       this.toaster.show(nome + " eliminato con successo!", { classname: "bg-success text-light" });

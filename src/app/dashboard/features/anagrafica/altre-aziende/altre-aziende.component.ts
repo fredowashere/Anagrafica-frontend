@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
-import { AnagraficaService } from '../services/anagrafica.service';
 import { Cliente } from '../models/cliente';
 import { PrepareObject } from '../models/prepare-object';
+import { AltreAziendeService } from '../services/altre-aziende.service';
 
 @Component({
   selector: 'app-altre-aziende',
@@ -48,12 +48,12 @@ export class AltreAziendeComponent {
   });
 
   constructor(
-    private anagraficaService: AnagraficaService
+    private altreAziendeService: AltreAziendeService
   ) {}
 
   ngOnInit() {
 
-    this.anagraficaService
+    this.altreAziendeService
       .terzePartiPrepareSearchFilters()
       .subscribe(formLists => {
 
@@ -77,7 +77,7 @@ export class AltreAziendeComponent {
         takeUntil(this.destroy$),
         tap(() => this.isLoading = true),
         switchMap(() =>
-          this.anagraficaService.terzePartiSearch({
+          this.altreAziendeService.terzePartiSearch({
             descrizione: this.nomeAziendaCtrl.value,
             idBu: this.businessUnitCtrl.value?.id,
             idTipoTerzeParti: this.tipoCtrl.value?.id,

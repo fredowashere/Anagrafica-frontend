@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
-import { AnagraficaService } from '../services/anagrafica.service';
+import { Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Azienda } from '../models/azienda';
 import { PrepareObject } from '../models/prepare-object';
+import { AziendeGruppoService } from '../services/aziende-gruppo.service';
 
 @Component({
   selector: 'app-aziende-gruppo',
@@ -38,24 +38,24 @@ export class AziendeGruppoComponent {
   });
 
   constructor(
-    private anagraficaService: AnagraficaService
+    private aziendeGruppoService: AziendeGruppoService
   ) {}
 
   ngOnInit() {
 
-    this.anagraficaService
+    this.aziendeGruppoService
       .prepareRagioniSociali()
       .subscribe(ragioniSociali =>
         this.formeAziendali = ragioniSociali
       );
 
-    this.anagraficaService
+    this.aziendeGruppoService
       .prepareTipologieContratto()
       .subscribe(tipologieContratti =>
         this.tipologieContratti = tipologieContratti
       );
 
-    this.anagraficaService
+    this.aziendeGruppoService
       .prepareSettoriMerceologici()
       .subscribe(settoriMerceologici =>
         this.settoriMerceologici = settoriMerceologici
@@ -66,7 +66,7 @@ export class AziendeGruppoComponent {
         takeUntil(this.destroy$),
         tap(() => this.isLoading = true),
         switchMap(() =>
-          this.anagraficaService.aziendeGruppo({
+          this.aziendeGruppoService.aziendeGruppo({
             descrizione: this.descrizioneCtrl.value,
             idRagioneSociale: this.formaAziendaleCtrl.value?.id,
             idSettoreMerceologico: this.settoreMerceologicoCtrl.value?.id,
