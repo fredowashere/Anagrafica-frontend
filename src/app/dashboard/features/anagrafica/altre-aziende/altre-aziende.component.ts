@@ -4,6 +4,8 @@ import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
 import { Cliente } from '../models/cliente';
 import { PrepareObject } from '../models/prepare-object';
 import { AltreAziendeService } from '../services/altre-aziende.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AltreAziendeCreazioneModifica } from '../dialogs/altre-aziende-creazione-modifica/altre-aziende-creazione-modifica.component';
 
 @Component({
   selector: 'app-altre-aziende',
@@ -48,7 +50,8 @@ export class AltreAziendeComponent {
   });
 
   constructor(
-    private altreAziendeService: AltreAziendeService
+    private altreAziendeService: AltreAziendeService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit() {
@@ -98,6 +101,37 @@ export class AltreAziendeComponent {
 
   ngOnDestroy() {
     this.destroy$.next();
+  }
+
+  getCreazioneModificaDialog() {
+    return this.modalService.open(
+      AltreAziendeCreazioneModifica,
+      { size: 'lg', centered: true }
+    );
+  }
+
+  async create() {
+    
+    const modalRef = this.getCreazioneModificaDialog();
+    await modalRef.result;
+
+    this.refresh$.next();
+  }
+
+  async update(item: Cliente) {
+
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+
+    this.refresh$.next();
+  }
+
+  async readonly(item: Cliente) {
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.readonlyItem = true;
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
   }
 
   nop() {}

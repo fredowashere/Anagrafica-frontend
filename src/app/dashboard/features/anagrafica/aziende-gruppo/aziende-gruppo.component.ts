@@ -4,6 +4,8 @@ import { Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Azienda } from '../models/azienda';
 import { PrepareObject } from '../models/prepare-object';
 import { AziendeGruppoService } from '../services/aziende-gruppo.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AziendaGruppoCreazioneModifica } from '../dialogs/aziende-gruppo-creazione-modifica/aziende-gruppo-creazione-modifica.component';
 
 @Component({
   selector: 'app-aziende-gruppo',
@@ -38,7 +40,8 @@ export class AziendeGruppoComponent {
   });
 
   constructor(
-    private aziendeGruppoService: AziendeGruppoService
+    private aziendeGruppoService: AziendeGruppoService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit() {
@@ -86,5 +89,37 @@ export class AziendeGruppoComponent {
     this.destroy$.next();
   }
 
+  getCreazioneModificaDialog() {
+    return this.modalService.open(
+      AziendaGruppoCreazioneModifica,
+      { size: 'lg', centered: true }
+    );
+  }
+
+  async create() {
+    
+    const modalRef = this.getCreazioneModificaDialog();
+    await modalRef.result;
+
+    this.refresh$.next();
+  }
+
+  async update(item: Azienda) {
+
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+
+    this.refresh$.next();
+  }
+
+  async readonly(item: Azienda) {
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.readonlyItem = true;
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+  }
+
   nop() {}
+  
 }

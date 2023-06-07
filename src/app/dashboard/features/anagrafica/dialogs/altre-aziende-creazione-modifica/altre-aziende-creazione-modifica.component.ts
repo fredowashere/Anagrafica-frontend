@@ -15,11 +15,11 @@ import { AltreAziendeService } from "../../services/altre-aziende.service";
     templateUrl: "./altre-aziende-creazione-modifica.component.html",
     styleUrls: [ "./altre-aziende-creazione-modifica.component.css" ]
 })
-export class PersoneOrganicoCreazioneModifica implements OnInit {
+export class AltreAziendeCreazioneModifica implements OnInit {
 
     @Input("itemToUpdate") itemToUpdate?: Contatto;
     @Input("readonlyItem") readonlyItem = false;
-    azienda?: any;
+    cliente?: any;
     aziendaLookup: { [key: number]: PrepareObject | undefined } = {};
     referenteLookup: { [key: number]: PrepareObject | undefined } = {};
     loading = false;
@@ -71,7 +71,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     async update() {
 
-        if (!this.azienda || this.stage1Form.invalid || this.stage2Form.invalid || this.stage3Form.invalid) return;
+        if (!this.cliente || this.stage1Form.invalid || this.stage2Form.invalid || this.stage3Form.invalid) return;
 
         try {
 
