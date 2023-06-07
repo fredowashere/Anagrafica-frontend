@@ -20,6 +20,14 @@ export class AnagraficaService {
     private authService: AuthService
   ) { }
 
+  // To make the same kind of text go to https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow
+  // 
+  // ██████╗ ███████╗██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗    ██╗███╗   ██╗     ██████╗ ██████╗  ██████╗  █████╗ ███╗   ██╗██╗ ██████╗ ██████╗ 
+  // ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔═══██╗████╗  ██║██╔════╝    ██║████╗  ██║    ██╔═══██╗██╔══██╗██╔════╝ ██╔══██╗████╗  ██║██║██╔════╝██╔═══██╗
+  // ██████╔╝█████╗  ██████╔╝███████╗██║   ██║██╔██╗ ██║█████╗      ██║██╔██╗ ██║    ██║   ██║██████╔╝██║  ███╗███████║██╔██╗ ██║██║██║     ██║   ██║
+  // ██╔═══╝ ██╔══╝  ██╔══██╗╚════██║██║   ██║██║╚██╗██║██╔══╝      ██║██║╚██╗██║    ██║   ██║██╔══██╗██║   ██║██╔══██║██║╚██╗██║██║██║     ██║   ██║
+  // ██║     ███████╗██║  ██║███████║╚██████╔╝██║ ╚████║███████╗    ██║██║ ╚████║    ╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║ ╚████║██║╚██████╗╚██████╔╝
+  // ╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝    ╚═╝╚═╝  ╚═══╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝ ╚═════╝ ╚═════╝ 
   findPerson(filter: FindPersonParam) {
 
     const url = `${environment.scaiRoot}/anagrafica-service/findPerson`;
@@ -39,6 +47,28 @@ export class AnagraficaService {
     return this.http.post<Person[]>(url, filter);
   }
 
+  prepareBusinessUnit() {
+
+    const url = `${environment.scaiRoot}/anagrafica-service/prepareBusinessUnit`;
+    const { idAzienda } = this.authService.user;
+
+    const params = new HttpParams()
+      .set("idAziendaSelezionata", idAzienda + "");
+
+    return this.http.get<PrepareObject[]>(url, { params: params });
+  }
+
+  prepareTipiUtente() {
+    const url = `${environment.scaiRoot}/anagrafica-service/prepareTipiUtente`;
+    return this.http.get<PrepareObject[]>(url);
+  }
+
+  //  █████╗ ██╗  ████████╗██████╗ ███████╗    ██████╗ ███████╗██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗
+  // ██╔══██╗██║  ╚══██╔══╝██╔══██╗██╔════╝    ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔═══██╗████╗  ██║██╔════╝
+  // ███████║██║     ██║   ██████╔╝█████╗      ██████╔╝█████╗  ██████╔╝███████╗██║   ██║██╔██╗ ██║█████╗  
+  // ██╔══██║██║     ██║   ██╔══██╗██╔══╝      ██╔═══╝ ██╔══╝  ██╔══██╗╚════██║██║   ██║██║╚██╗██║██╔══╝  
+  // ██║  ██║███████╗██║   ██║  ██║███████╗    ██║     ███████╗██║  ██║███████║╚██████╔╝██║ ╚████║███████╗
+  // ╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝                                                                                                                          
   altrePersone(filter: AltrePersoneParam): Observable<Contatto[]> {
 
     const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/ricercaAltrePersone`;
@@ -63,91 +93,11 @@ export class AnagraficaService {
       );
   }
 
-  aziendeGruppo(filter: AziendeGruppoParam): Observable<Azienda[]> {
-
-    const url = `${environment.scaiRoot}/anagrafica-service/aziendeGruppo/filteredSearch`;
-
-    return this.http.post<any>(url, filter)
-      .pipe(
-        map(response =>
-          response.map((azienda: any) => ({
-            descrizione: azienda.descrizione,
-            idAzienda: azienda.idAzienda,
-            valido: azienda.valido
-          }))
-        )
-      );
-  }
-
-  terzePartiSearch(filter: TerzePartiSearchParam): Observable<Cliente[]> {
-    
-    const url = `${environment.scaiRoot}/anagrafica-service/terzeParti/search`;
-    const { idAzienda } = this.authService.user;
-
-    // Force the endpoint to give me ALL the data
-    const params = new HttpParams()
-      .set("idAziendaSelezionata", idAzienda!)
-      .set("page", 1)
-      .set("size", 10000)
-      .set("filters", JSON.stringify(filter));
-
-    return this.http.get<any>(url, { params })
-      .pipe(
-        map(response => {
-          if (!response.risultati) return [];
-          if (Array.isArray(response.risultati)) return response.risultati;
-          return [];
-        })
-      );
-  }
-
-  prepareBusinessUnit() {
-
-    const url = `${environment.scaiRoot}/anagrafica-service/prepareBusinessUnit`;
-    const { idAzienda } = this.authService.user;
-
-    const params = new HttpParams()
-      .set("idAziendaSelezionata", idAzienda + "");
-
-    return this.http.get<PrepareObject[]>(url, { params: params });
-  }
-
-  prepareTipiUtente() {
-    const url = `${environment.scaiRoot}/anagrafica-service/prepareTipiUtente`;
-    return this.http.get<PrepareObject[]>(url);
-  }
-
   prepareReferenti() {
     const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/prepareReferenti`;
     return this.http.get<PrepareObject[]>(url);
   }
-
-  prepareRagioniSociali() {
-    const url = `${environment.scaiRoot}/anagrafica-service/prepareRagioniSociali`;
-    return this.http.get<PrepareObject[]>(url);
-  }
-
-  prepareTipologieContratto() {
-    const url = `${environment.scaiRoot}/anagrafica-service/prepareTipologieContratto`;
-    return this.http.get<PrepareObject[]>(url);
-  }
-
-  prepareSettoriMerceologici() {
-    const url = `${environment.scaiRoot}/anagrafica-service/prepareSettoriMerceologici`;
-    return this.http.get<PrepareObject[]>(url);
-  }
-
-  terzePartiPrepareSearchFilters() {
-
-    const url = `${environment.scaiRoot}/anagrafica-service/terzeParti/prepareSearchFilters`;
-    const { idAzienda } = this.authService.user;
-
-    const params = new HttpParams()
-      .append("idAziendaSelezionata", idAzienda + "");
-
-    return this.http.get<SearchFilters>(url, { params });
-  }
-
+  
   prepareTitoli() {
     const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/prepareTitoli`;
     return this.http.get<PrepareObject[]>(url);
@@ -181,6 +131,82 @@ export class AnagraficaService {
   saveContatto(contatto: SaveContattoParam) {
     const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/saveContatto`;
     return this.http.post(url, contatto);
+  }
+
+  //  █████╗ ███████╗██╗███████╗███╗   ██╗██████╗ ███████╗    ██████╗ ███████╗██╗          ██████╗ ██████╗ ██╗   ██╗██████╗ ██████╗  ██████╗ 
+  // ██╔══██╗╚══███╔╝██║██╔════╝████╗  ██║██╔══██╗██╔════╝    ██╔══██╗██╔════╝██║         ██╔════╝ ██╔══██╗██║   ██║██╔══██╗██╔══██╗██╔═══██╗
+  // ███████║  ███╔╝ ██║█████╗  ██╔██╗ ██║██║  ██║█████╗      ██║  ██║█████╗  ██║         ██║  ███╗██████╔╝██║   ██║██████╔╝██████╔╝██║   ██║
+  // ██╔══██║ ███╔╝  ██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝      ██║  ██║██╔══╝  ██║         ██║   ██║██╔══██╗██║   ██║██╔═══╝ ██╔═══╝ ██║   ██║
+  // ██║  ██║███████╗██║███████╗██║ ╚████║██████╔╝███████╗    ██████╔╝███████╗███████╗    ╚██████╔╝██║  ██║╚██████╔╝██║     ██║     ╚██████╔╝
+  // ╚═╝  ╚═╝╚══════╝╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝    ╚═════╝ ╚══════╝╚══════╝     ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝      ╚═════╝ 
+  aziendeGruppo(filter: AziendeGruppoParam): Observable<Azienda[]> {
+
+    const url = `${environment.scaiRoot}/anagrafica-service/aziendeGruppo/filteredSearch`;
+
+    return this.http.post<any>(url, filter)
+      .pipe(
+        map(response =>
+          response.map((azienda: any) => ({
+            descrizione: azienda.descrizione,
+            idAzienda: azienda.idAzienda,
+            valido: azienda.valido
+          }))
+        )
+      );
+  }
+
+  prepareRagioniSociali() {
+    const url = `${environment.scaiRoot}/anagrafica-service/prepareRagioniSociali`;
+    return this.http.get<PrepareObject[]>(url);
+  }
+
+  prepareTipologieContratto() {
+    const url = `${environment.scaiRoot}/anagrafica-service/prepareTipologieContratto`;
+    return this.http.get<PrepareObject[]>(url);
+  }
+
+  prepareSettoriMerceologici() {
+    const url = `${environment.scaiRoot}/anagrafica-service/prepareSettoriMerceologici`;
+    return this.http.get<PrepareObject[]>(url);
+  }
+
+  //  █████╗ ██╗  ████████╗██████╗ ███████╗     █████╗ ███████╗██╗███████╗███╗   ██╗██████╗ ███████╗
+  // ██╔══██╗██║  ╚══██╔══╝██╔══██╗██╔════╝    ██╔══██╗╚══███╔╝██║██╔════╝████╗  ██║██╔══██╗██╔════╝
+  // ███████║██║     ██║   ██████╔╝█████╗      ███████║  ███╔╝ ██║█████╗  ██╔██╗ ██║██║  ██║█████╗  
+  // ██╔══██║██║     ██║   ██╔══██╗██╔══╝      ██╔══██║ ███╔╝  ██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  
+  // ██║  ██║███████╗██║   ██║  ██║███████╗    ██║  ██║███████╗██║███████╗██║ ╚████║██████╔╝███████╗
+  // ╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═╝  ╚═╝╚══════╝╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝
+  terzePartiSearch(filter: TerzePartiSearchParam): Observable<Cliente[]> {
+    
+    const url = `${environment.scaiRoot}/anagrafica-service/terzeParti/search`;
+    const { idAzienda } = this.authService.user;
+
+    // Force the endpoint to give me ALL the data
+    const params = new HttpParams()
+      .set("idAziendaSelezionata", idAzienda!)
+      .set("page", 1)
+      .set("size", 10000)
+      .set("filters", JSON.stringify(filter));
+
+    return this.http.get<any>(url, { params })
+      .pipe(
+        map(response => {
+          if (!response.risultati) return [];
+          if (Array.isArray(response.risultati)) return response.risultati;
+          return [];
+        })
+      );
+  }
+
+  terzePartiPrepareSearchFilters() {
+
+    const url = `${environment.scaiRoot}/anagrafica-service/terzeParti/prepareSearchFilters`;
+    const { idAzienda } = this.authService.user;
+
+    const params = new HttpParams()
+      .append("idAziendaSelezionata", idAzienda + "");
+
+    return this.http.get<SearchFilters>(url, { params });
   }
 
 }
