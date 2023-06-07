@@ -1,0 +1,29 @@
+.app-item-resume {
+    display: grid;
+    grid-template-columns: min-content auto;
+    justify-content: center;
+    gap: 0.25rem 1rem;
+    padding: 0 1rem;
+    font-size: 1.15rem;
+}
+
+.app-item-resume > *:nth-child(2n+1) {
+    text-align: right;
+}
+
+@media (max-width: 600px) {
+
+    .app-item-resume {
+        grid-template-columns: 1fr;
+        gap: 0.25rem 1rem;
+        padding: 0 1rem;
+    }
+
+    .app-item-resume > * {
+        text-align: center !important;
+    }
+
+    .app-item-resume > *:nth-child(2n) {
+        margin-bottom: 0.5rem;
+    }
+}

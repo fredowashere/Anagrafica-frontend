@@ -144,22 +144,22 @@
         >
 
             <ng-template #thead>
+                <th sortable="idUtente" (sort)="dt.sort($event)">ID</th>
                 <th sortable="cognome" (sort)="dt.sort($event)">Cognome</th>
                 <th sortable="nome" (sort)="dt.sort($event)">Nome</th>
-                <th sortable="idUtente" (sort)="dt.sort($event)">ID utente</th>
                 <th sortable="autenticabile" (sort)="dt.sort($event)">Autenticabile</th>
                 <th style="width: 10rem"></th>
             </ng-template>
 
             <ng-template #tbody let-item let-term$="term$">
+                <td data-label="ID">
+                    <ngb-highlight [result]="item.idUtente" [term]="$any(term$ | async)"/>
+                </td>
                 <td data-label="Cognome">
                     <ngb-highlight [result]="item.cognome" [term]="$any(term$ | async)"/>
                 </td>
                 <td data-label="Nome">
                     <ngb-highlight [result]="item.nome" [term]="$any(term$ | async)"/>
-                </td>
-                <td data-label="ID utente">
-                    <ngb-highlight [result]="item.idUtente" [term]="$any(term$ | async)"/>
                 </td>
                 <td data-label="Autenticabile">{{ item.autenticabile ? 'SI' : 'NO' }}</td>
                 <td>

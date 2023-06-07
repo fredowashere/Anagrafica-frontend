@@ -1,0 +1,292 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{ readonlyItem ? "Dettaglio" : itemToUpdate ? "Modifica" : "Creazione" }} contatto</h4>
+    <button type="button" class="btn-close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+    <ng-container *ngIf="loading; else showContent">
+        <div class="my-5 text-center">
+            <div class="spinner-border"></div>
+        </div>
+    </ng-container>
+    <ng-template #showContent>
+
+        <ng-template #autocompleteTemplate let-r="result" let-t="term">
+            <span class="text-muted pe-2">
+                <ngb-highlight [result]="r.id" [term]="t"></ngb-highlight>
+            </span>
+            <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
+        </ng-template>
+
+        <nav class="wiz" ngbNav #nav="ngbNav" [destroyOnHide]="false">
+
+            <ng-container [ngbNavItem]="1">
+                <a ngbNavLink class="wiz__step">
+                    <div class="wiz__descr">Informazioni contatto</div>
+                </a>
+                <ng-template ngbNavContent>
+
+                    <form class="p-2" novalidate>
+
+                        <div class="flexgrid flexgrid--3">
+
+                            <app-input
+                                type="select"
+                                name="titolo"
+                                label="Titolo *"
+                                [options]="titoli"
+                                [ngControl]="titoloCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="cognome"
+                                label="Cognome *"
+                                [ngControl]="cognomeCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="nome"
+                                label="Nome *"
+                                [ngControl]="nomeCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+                        </div>
+
+                        <div class="flexgrid flexgrid--2 mb-3">
+
+                            <app-input
+                                type="autocomplete"
+                                name="azienda"
+                                label="Azienda *"
+                                [options]="aziende"
+                                [template]="autocompleteTemplate"
+                                [formatter]="autocompleteFormatter"
+                                [limit]="25"
+                                [ngControl]="aziendaCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                type="autocomplete"
+                                name="referente"
+                                label="Referente *"
+                                [options]="referenti"
+                                [template]="autocompleteTemplate"
+                                [formatter]="autocompleteFormatter"
+                                [ngControl]="referenteCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                type="checkbox"
+                                name="auguri"
+                                label="Auguri di compleanno"
+                                [ngControl]="auguriCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+                        </div>
+
+                        <div class="text-end">
+                            <button
+                                class="btn btn-outline-primary"
+                                [disabled]="stage1Form.invalid"
+                                (click)="nav.select(2)"
+                            >
+                                Prossimo <i class="bi bi-caret-right-fill"></i>
+                            </button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ng-container>
+
+            <ng-container [ngbNavItem]="2" [disabled]="stage1Form.invalid">
+                <a ngbNavLink class="wiz__step">
+                    <div class="wiz__descr">Recapiti professionali</div>
+                </a>
+                <ng-template ngbNavContent>
+
+                    <form class="p-2" novalidate>
+
+                        <div class="flexgrid flexgrid--2 mb-3">
+
+                            <app-input
+                                name="telefono"
+                                label="Telefono"
+                                [ngControl]="telefonoCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="cellulare"
+                                label="Cellulare"
+                                [ngControl]="cellulareCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="tecnoCode"
+                                label="Tecno code"
+                                [ngControl]="tecnoCodeCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="email"
+                                label="Email"
+                                [ngControl]="emailCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                type="checkbox"
+                                name="referenteCliente"
+                                label="Referente cliente"
+                                [ngControl]="referenteClienteCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+                        </div>
+
+                        <div class="flexgrid flexgrid--2 mb-3">
+
+                            <app-input
+                                type="autocomplete"
+                                name="indirizzo"
+                                label="Indirizzo"
+                                [options]="indirizzi"
+                                [template]="autocompleteTemplate"
+                                [formatter]="autocompleteFormatter"
+                                [ngControl]="indirizzoCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem || !indirizzi.length"
+                            />
+
+                            <app-input
+                                name="citta"
+                                label="Città"
+                                [ngControl]="cittaCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="true"
+                            />
+
+                            <app-input
+                                name="provincia"
+                                label="Provincia"
+                                [ngControl]="provinciaCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="true"
+                            />
+
+                            <app-input
+                                name="cap"
+                                label="CAP"
+                                [ngControl]="capCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="true"
+                            />
+                        </div>
+
+                        <div class="flexgrid mb-3">
+                            <app-input
+                                type="textarea"
+                                name="note"
+                                label="Note"
+                                [ngControl]="noteCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <button
+                                class="btn btn-outline-primary"
+                                (click)="nav.select(1)"
+                            >
+                                <i class="bi bi-caret-left-fill"></i> Precedente
+                            </button>
+
+                            <button
+                                class="btn btn-outline-primary"
+                                [disabled]="stage1Form.invalid || stage2Form.invalid"
+                                (click)="nav.select(3)"
+                            >
+                                Prossimo <i class="bi bi-caret-right-fill"></i>
+                            </button>
+                        </div>
+                    </form>
+                </ng-template>
+            </ng-container>
+
+            <ng-container [ngbNavItem]="3" [disabled]="stage1Form.invalid || stage2Form.invalid">
+                <a ngbNavLink class="wiz__step">
+                    <div class="wiz__descr">Recapiti personali</div>
+                </a>
+                <ng-template ngbNavContent>
+
+                    <form class="p-2" novalidate>
+                        <div class="flexgrid flexgrid--3 mb-3">
+
+                            <app-input
+                                name="telefonoPersonale"
+                                label="Telefono"
+                                [ngControl]="telefonoPrivataCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="cellularePersonale"
+                                label="Cellulare"
+                                [ngControl]="cellularePrivataCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="emailPersonale"
+                                label="Email"
+                                [ngControl]="emailPrivataCtrl"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+                        </div>
+
+                        <div *ngIf="!readonlyItem" class="text-center pt-3 mb-4">
+                            <button
+                                class="btn btn-lg btn-primary shadow"
+                                [disabled]="stage1Form.invalid || stage2Form.invalid || stage3Form.invalid"
+                            >
+                                Salva <i class="bi bi-save-fill"></i>
+                            </button>
+                        </div>
+
+                        <button
+                            class="btn btn-outline-primary"
+                            (click)="nav.select(2)"
+                        >
+                            <i class="bi bi-caret-left-fill"></i> Precedente
+                        </button>
+                    </form>
+                </ng-template>
+            </ng-container>
+        </nav>
+
+        <div *ngIf="!readonlyItem" class="text-muted px-3 pt-2 mb-2">
+            Per proseguire è necessario compilare tutti i campi obbligatori (*)
+        </div>
+        
+        <div [ngbNavOutlet]="nav"></div>
+    </ng-template>
+</div>

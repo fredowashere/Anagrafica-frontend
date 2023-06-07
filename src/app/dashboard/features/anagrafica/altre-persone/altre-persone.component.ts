@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
+import { Subject, lastValueFrom, merge, of, switchMap, takeUntil, tap } from 'rxjs';
 import { AnagraficaService } from '../services/anagrafica.service';
 import { Contatto } from '../models/contatto';
-import { UtentiAnagrafica } from 'src/app/api/modulo-attivita/models';
 import { PrepareObject } from '../models/prepare-object';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AltrePersoneCreazioneModifica } from '../dialogs/altre-persone-creazione-modifica/altre-persone-creazione-modifica.component';
+import { EliminazioneDialog } from '../../commons/dialogs/eliminazione.dialog';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-altre-persone',
@@ -33,7 +36,9 @@ export class AltrePersoneComponent {
   });
 
   constructor(
-    private anagraficaService: AnagraficaService
+    private anagraficaService: AnagraficaService,
+    private modalService: NgbModal,
+    private toaster: ToastService
   ) {}
 
   ngOnInit() {
@@ -71,6 +76,48 @@ export class AltrePersoneComponent {
     this.destroy$.next();
   }
 
-  nop() {}
+  getCreazioneModificaDialog() {
+    return this.modalService.open(
+      AltrePersoneCreazioneModifica,
+      { size: 'lg', centered: true }
+    );
+  }
+
+  async create() {
+    const modalRef = this.getCreazioneModificaDialog();
+    await modalRef.result;
+  }
+
+  async update(item: Contatto) {
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+  }
+
+  async readonly(item: Contatto) {
+    const modalRef = this.getCreazioneModificaDialog();
+    modalRef.componentInstance.readonlyItem = true;
+    modalRef.componentInstance.itemToUpdate = item;
+    await modalRef.result;
+  }
+
+  async delete(item: Contatto) {
+
+    const nome = item.cognome + ' ' + item.nome;
+
+    const modalRef = this.modalService.open(
+      EliminazioneDialog,
+      { size: 'md', centered: true }
+    );
+    modalRef.componentInstance.name = nome;
+    await modalRef.result;
+
+    await lastValueFrom(
+      this.anagraficaService.eliminaContatto(item.idUtente)
+    );
+
+    this.toaster.show(nome + " eliminato con successo!", { classname: 'bg-success text-light' });
+    this.refresh$.next();
+  }
 
 }

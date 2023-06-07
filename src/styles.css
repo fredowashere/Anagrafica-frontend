@@ -4,7 +4,7 @@
 :root {
   --app-body-background: var(--app-gray_100);
   --app-sidebar-gradient: linear-gradient(135deg, rgba(var(--app-blue_100), 1), rgba(var(--app-blue_500), 1));
-  --flexgrid-col-min-width: 20ch;
+  --flexgrid-col-min-width: 25ch;
   --flexgrid-gap: 1rem;
 
   --app-blue-scai_100: 0, 102, 187;
@@ -146,6 +146,19 @@ app-table .ngb-highlight {
 
 app-table th {
   white-space: nowrap;
+}
+
+@media (min-width: 600px) {
+
+  app-table .table > thead > tr > th:first-child,
+  app-table .table > tbody > tr > td:first-child {
+    padding-left: 1.5rem !important;
+  }
+
+  app-table .table > thead > tr > th:last-child,
+  app-table .table > tbody > tr > td:last-child {
+    padding-right: 1.5rem !important;
+  }
 }
 
 th[sortable] {

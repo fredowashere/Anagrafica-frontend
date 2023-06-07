@@ -3,11 +3,12 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FindPersonParam, Person } from '../models/persona';
 import { AuthService } from 'src/app/services/auth.service';
-import { AltrePersoneParam, Contatto } from '../models/contatto';
+import { AltrePersoneParam, Contatto, DettaglioContatto } from '../models/contatto';
 import { Observable, map } from 'rxjs';
 import { Azienda, AziendeGruppoParam } from '../models/azienda';
 import { Cliente, TerzePartiSearchParam } from '../models/cliente';
 import { PrepareObject, SearchFilters } from '../models/prepare-object';
+import { IndirizzoInfo } from '../models/indirizzo';
 
 @Injectable({
   providedIn: 'root'
@@ -145,5 +146,36 @@ export class AnagraficaService {
       .append("idAziendaSelezionata", idAzienda + "");
 
     return this.http.get<SearchFilters>(url, { params });
-}
+  }
+
+  prepareTitoli() {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/prepareTitoli`;
+    return this.http.get<PrepareObject[]>(url);
+  }
+
+  prepareAziendeClientiTerzeParti() {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/prepareAziendeClientiTerzeParti?snippet=`;
+    return this.http.get<PrepareObject[]>(url);
+  }
+
+  prepareIndirizzo(idTerzaParte: number) {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/prepareIndirizzo`;
+    return this.http.post<PrepareObject[]>(url, idTerzaParte);
+  }
+
+  prepareIndirizzoInfo(indirizzo: { idTerzaParte: number, indirizzo: string }) {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/prepareIndirizzoInfo`;
+    return this.http.post<IndirizzoInfo>(url, indirizzo);
+  }
+
+  dettaglioContatto(idUtente: number) {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/dettaglioContatto`;
+    return this.http.post<DettaglioContatto>(url, idUtente);
+  }
+
+  eliminaContatto(idUtente: number) {
+    const url = `${environment.scaiRoot}/anagrafica-service/altrePersone/eliminaContatto`;
+    return this.http.post(url, idUtente);
+  }
+
 }

@@ -36,9 +36,9 @@
                 [floatingLabel]="true"
             ></app-input>
             <ng-template #refTmpl let-r="result" let-t="term">
-                <!-- <span class="text-muted pe-2">
+                <span class="text-muted pe-2">
                     <ngb-highlight [result]="r.id" [term]="t"></ngb-highlight>
-                </span> -->
+                </span>
                 <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
             </ng-template>
         </div>
@@ -79,7 +79,7 @@
             <button
                 type="button"
                 class="btn btn-success shadow"
-                (click)="nop()"
+                (click)="create()"
             >
                 <i class="bi bi-plus"></i>
                 Crea contatto
@@ -131,29 +131,37 @@
         >
 
             <ng-template #thead>
+                <th sortable="idUtente" (sort)="dt.sort($event)">ID</th>
                 <th sortable="cognome" (sort)="dt.sort($event)">Cognome</th>
                 <th sortable="nome" (sort)="dt.sort($event)">Nome</th>
-                <th sortable="idUtente" (sort)="dt.sort($event)">ID utente</th>
                 <th style="width: 10rem"></th>
             </ng-template>
 
             <ng-template #tbody let-item let-term$="term$">
+                <td data-label="ID">
+                    <ngb-highlight [result]="item.idUtente" [term]="$any(term$ | async)"/>
+                </td>
                 <td data-label="Cognome">
                     <ngb-highlight [result]="item.cognome" [term]="$any(term$ | async)"/>
                 </td>
                 <td data-label="Nome">
                     <ngb-highlight [result]="item.nome" [term]="$any(term$ | async)"/>
                 </td>
-                <td data-label="ID utente">
-                    <ngb-highlight [result]="item.idUtente" [term]="$any(term$ | async)"/>
-                </td>
                 <td>
                     <div class="d-flex gap-2 justify-content-center">
 
                         <button
                             type="button"
+                            class="btn btn-primary shadow"
+                            (click)="readonly(item)"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+
+                        <button
+                            type="button"
                             class="btn btn-warning shadow"
-                            (click)="nop()"
+                            (click)="update(item)"
                         >
                             <i class="bi bi-pencil"></i>
                         </button>
@@ -161,7 +169,7 @@
                         <button
                             type="button"
                             class="btn btn-danger shadow"
-                            (click)="nop()"
+                            (click)="delete(item)"
                         >
                             <i class="bi bi-trash3"></i>
                         </button>
