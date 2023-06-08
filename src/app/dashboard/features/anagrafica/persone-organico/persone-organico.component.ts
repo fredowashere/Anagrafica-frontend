@@ -96,7 +96,7 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
   getCreazioneModificaDialog() {
     return this.modalService.open(
       PersoneOrganicoCreazioneModifica,
-      { size: 'lg', centered: true }
+      { size: 'xl', centered: true }
     );
   }
 

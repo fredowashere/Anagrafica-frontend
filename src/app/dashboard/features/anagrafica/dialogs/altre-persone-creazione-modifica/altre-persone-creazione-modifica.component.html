@@ -83,11 +83,23 @@
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
+                        </div>
+
+                        <div class="flexgrid">
+
+                            <app-input
+                                type="checkbox"
+                                name="referenteCliente"
+                                label="Referente cliente"
+                                [ngControl]="form1.controls['referenteCliente']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
 
                             <app-input
                                 type="checkbox"
                                 name="auguri"
-                                label="Auguri di compleanno"
+                                label="Auguri"
                                 [ngControl]="form1.controls['auguri']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
@@ -116,23 +128,7 @@
 
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
-                        <div class="flexgrid flexgrid--2 mb-3">
-
-                            <app-input
-                                name="telefono"
-                                label="Telefono"
-                                [ngControl]="form2.controls['telefono']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="cellulare"
-                                label="Cellulare"
-                                [ngControl]="form2.controls['cellulare']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+                        <div class="flexgrid flexgrid--4">
 
                             <app-input
                                 name="tecnoCode"
@@ -143,24 +139,31 @@
                             />
 
                             <app-input
-                                name="email"
-                                label="Email"
-                                [ngControl]="form2.controls['email']"
+                                name="telefono"
+                                label="Telefono aziendale"
+                                [ngControl]="form2.controls['telefono']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
 
                             <app-input
-                                type="checkbox"
-                                name="referenteCliente"
-                                label="Referente cliente"
-                                [ngControl]="form2.controls['referenteCliente']"
+                                name="cellulare"
+                                label="Cellulare aziendale"
+                                [ngControl]="form2.controls['cellulare']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="email"
+                                label="Email aziendale"
+                                [ngControl]="form2.controls['email']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
                         </div>
 
-                        <div class="flexgrid flexgrid--2 mb-3">
+                        <div class="flexgrid flexgrid--4">
 
                             <app-input
                                 type="select"
@@ -198,6 +201,7 @@
                         </div>
 
                         <div class="flexgrid">
+
                             <app-input
                                 type="textarea"
                                 name="note"
@@ -242,24 +246,24 @@
 
                             <app-input
                                 name="telefonoPersonale"
-                                label="Telefono"
-                                [ngControl]="form3.controls['telefonoPrivata']"
+                                label="Telefono personale"
+                                [ngControl]="form3.controls['telefonoPersonale']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
 
                             <app-input
                                 name="cellularePersonale"
-                                label="Cellulare"
-                                [ngControl]="form3.controls['cellularePrivata']"
+                                label="Cellulare personale"
+                                [ngControl]="form3.controls['cellularePersonale']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
 
                             <app-input
                                 name="emailPersonale"
-                                label="Email"
-                                [ngControl]="form3.controls['emailPrivata']"
+                                label="Email personale"
+                                [ngControl]="form3.controls['emailPersonale']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />

@@ -1,6 +1,6 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { FindPersonParam, Person } from "../models/persona";
+import { DettaglioPersona, FindPersonParam, Person } from "../models/persona";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/services/auth.service";
 import { PrepareObject } from "../models/prepare-object";
@@ -41,6 +41,11 @@ export class PersoneOrganicoService {
         return this.http.post<Person[]>(url, filter);
     }
 
+    getUtenteAnagraficaById(idUtente: number) {
+        const url = `${environment.scaiRoot}/anagrafica-service/getUtenteAnagraficaById?idUtente=${idUtente}`;
+        return this.http.get<DettaglioPersona>(url);
+    }
+
     prepareBusinessUnit() {
         const { idAzienda } = this.authService.user;
         const url = `${environment.scaiRoot}/anagrafica-service/prepareBusinessUnit?idAziendaSelezionata=${idAzienda}`;
@@ -69,6 +74,11 @@ export class PersoneOrganicoService {
 
     prepareTitoliStudio() {
         const url = `${environment.scaiRoot}/anagrafica-service/prepareTitoliStudio`;
+        return this.http.get<PrepareObject[]>(url);
+    }
+
+    prepareTitoliStudioArea(idTitoloDiStudio: number) {
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareTitoliStudioArea?idTitoloDiStudio=${idTitoloDiStudio}`;
         return this.http.get<PrepareObject[]>(url);
     }
 

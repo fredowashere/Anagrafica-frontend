@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Contatto } from "../../models/contatto";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { SharedModule } from "src/app/shared/shared.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { PrepareObject } from "../../models/prepare-object";
-import { lastValueFrom } from "rxjs";
+import { combineLatest, lastValueFrom, map } from "rxjs";
 import { ToastService } from "src/app/services/toast.service";
 import { PersoneOrganicoService } from "../../services/persone-organico.service";
 import { SelectOption } from "src/app/shared/components/input/input.component";
+import { Abilitazione, Person } from "../../models/persona";
 
 @Component({
     standalone: true,
@@ -18,33 +18,43 @@ import { SelectOption } from "src/app/shared/components/input/input.component";
 })
 export class PersoneOrganicoCreazioneModifica implements OnInit {
 
-    @Input("itemToUpdate") itemToUpdate?: Contatto;
+    @Input("itemToUpdate") itemToUpdate?: Person;
     @Input("readonlyItem") readonlyItem = false;
     persona?: any;
     aziendaLookup: { [key: number]: PrepareObject | undefined } = {};
     referenteLookup: { [key: number]: PrepareObject | undefined } = {};
     loading = false;
 
+    booleans = [
+        { value: false, text: "No" },
+        { value: true, text: "Si" }
+    ];
+
     // Stage 1
+    istruzioneCollapsed = !this.readonlyItem;
+    residenzaCollapsed = !this.readonlyItem;
+    contattiCollapsed = !this.readonlyItem;
+    altroCollapsed = !this.readonlyItem;
+
     titoli: SelectOption[] = [];
     generiBiologici = [
         { value: "M", text: "Maschio" },
         { value: "F", text: "Femmina" }
     ];
-    statiCivili = [];
-    titoliStudio: SelectOption[] = [];
-    materieStudio: SelectOption[] = [];
+    statiCivili: SelectOption[] = [];
+    titoliStudio: PrepareObject[] = [];
+    materieStudio: PrepareObject[] = [];
 
     form1 = new FormGroup({
 
         titolo: new FormControl(1),
         cognome: new FormControl("", [ Validators.required ]),
         nome: new FormControl("", [ Validators.required ]),
+        genereBiologico: new FormControl("M", [ Validators.required ]),
         dataNascita: new FormControl(),
         luogoNascita: new FormControl(),
         provinciaNascita: new FormControl(),
         nazionalita: new FormControl(),
-        genereBiologico: new FormControl(),
         codiceFiscale: new FormControl(),
         statoCivile: new FormControl(),
         titoloStudio: new FormControl(),
@@ -58,30 +68,34 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         telefono: new FormControl(),
         cellulare: new FormControl(),
         email: new FormControl(),
+        socioScai: new FormControl<boolean>(false),
+        datiRiservati: new FormControl<boolean>(false)
     });
 
     // Stage 2
+    contattiProfessionaliCollapse = !this.readonlyItem;
+    noteCollapsed = !this.readonlyItem;
 
     form2 = new FormGroup({
 
         tecnoCode: new FormControl(),
-        telefono: new FormControl(),
-        cellulare: new FormControl(),
-        email: new FormControl(),
-        fax: new FormControl(),
-        numeroBadge: new FormControl(),
         uuidWelcome: new FormControl(),
+        numeroBadge: new FormControl(),
+        gruppo: new FormControl(),
+
+        telefono: new FormControl(),
+        fax: new FormControl(),
+        cellulare: new FormControl(),
+        emailAziendale: new FormControl(),
+
         descrizioneSedeLavoro: new FormControl(),
         descrizioneUfficio: new FormControl(),
 
-        socioScai: new FormControl<boolean>(false),
-        emailAziendale: new FormControl(),
-        gruppo: new FormControl(),
-        datiRiservati: new FormControl<boolean>(false),
         note: new FormControl()
     });
 
     // Stage 3
+    abilitazioni: Abilitazione[] = [];
 
     form3 = new FormGroup({});
 
@@ -94,6 +108,29 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     async ngOnInit() {
 
         this.loading = true;
+        [ this.titoli, this.statiCivili, this.titoliStudio ] = await lastValueFrom(
+            combineLatest([
+                this.personeOrganicoService
+                    .prepareTitoliInsertPerson()
+                    .pipe(
+                        map(titoli =>
+                            titoli.map(({ id, descrizione }) =>
+                                ({ value: id, text: descrizione })
+                            )
+                        )
+                    ),
+                this.personeOrganicoService
+                    .prepareStatoCivile()
+                    .pipe(
+                        map(statoCivile =>
+                            statoCivile.map(({ id, descrizione }) =>
+                                ({ value: id, text: descrizione })
+                            )
+                        )
+                    ),
+                this.personeOrganicoService.prepareTitoliStudio()
+            ])
+        );
 
         this.loading = false;
 
@@ -104,6 +141,12 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
             this.loading = true;
 
+            this.persona = await lastValueFrom(
+                this.personeOrganicoService
+                    .getUtenteAnagraficaById(this.itemToUpdate.idUtente)
+            );
+
+            this.abilitazioni = this.persona.abilitazioni;
             
             this.loading = false;
 
@@ -152,5 +195,9 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         catch(ex) {
             this.toaster.show("Si è verificato un errore durante la creazione della persona. Contattare il supporto tecnico.", { classname: "bg-danger text-light" });
         }
+    }
+
+    deleteProfilo(profilo: any) {
+
     }
 }

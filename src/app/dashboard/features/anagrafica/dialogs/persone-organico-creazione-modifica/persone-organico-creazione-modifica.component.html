@@ -28,7 +28,8 @@
 
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
-                        <div class="flexgrid flexgrid--3">
+                        <div class="text-muted">Anagrafiche</div>
+                        <div class="flexgrid flexgrid--4">
 
                             <app-input
                                 type="select"
@@ -55,6 +56,216 @@
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
+
+                            <app-input
+                                type="select"
+                                name="sesso"
+                                label="Sesso *"
+                                [options]="generiBiologici"
+                                [ngControl]="form1.controls['genereBiologico']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                type="date"
+                                name="dataNascita"
+                                label="Data di nascita"
+                                [ngControl]="form1.controls['dataNascita']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="luogoNascita"
+                                label="Luogo di nascita"
+                                [ngControl]="form1.controls['luogoNascita']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="provinciaNascita"
+                                label="Provincia di nascita"
+                                [ngControl]="form1.controls['provinciaNascita']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="nazionalita"
+                                label="Nazionalità"
+                                [ngControl]="form1.controls['nazionalita']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+                        </div>
+
+                        <div class="border rounded p-2 px-3 mt-3">
+                            <button class="btn text-muted" (click)="istruzioneCollapsed = !istruzioneCollapsed">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="istruzioneCollapsed"
+                                    [class.bi-chevron-contract]="!istruzioneCollapsed"
+                                ></i>
+                                Istruzione
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="istruzioneCollapsed">
+                                <div class="flexgrid flexgrid--3 mt-2">
+        
+                                    <app-input
+                                        type="autocomplete"
+                                        name="titoloStudio"
+                                        label="Titolo di studio"
+                                        [options]="titoliStudio"
+                                        [ngControl]="form1.controls['titoloStudio']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        type="autocomplete"
+                                        name="materiaStudio"
+                                        label="Materia di studio"
+                                        [options]="materieStudio"
+                                        [ngControl]="form1.controls['materiaStudio']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                        helper="Seleziona il titolo di studio"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-2 px-3 mt-3">
+                            <button class="btn text-muted" (click)="residenzaCollapsed = !residenzaCollapsed">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="residenzaCollapsed"
+                                    [class.bi-chevron-contract]="!residenzaCollapsed"
+                                ></i>
+                                Residenza
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="residenzaCollapsed">
+                                <div class="flexgrid flexgrid--4 mt-2">
+        
+                                    <app-input
+                                        name="indirizzo"
+                                        label="Indirizzo"
+                                        [ngControl]="form1.controls['indirizzo']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="cap"
+                                        label="CAP"
+                                        [ngControl]="form1.controls['cap']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="citta"
+                                        label="Città"
+                                        [ngControl]="form1.controls['citta']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="provinciaResidenza"
+                                        label="Provincia di residenza"
+                                        [ngControl]="form1.controls['provinciaResidenza']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-2 px-3 mt-3">
+                            <button class="btn text-muted" (click)="contattiCollapsed = !contattiCollapsed">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="contattiCollapsed"
+                                    [class.bi-chevron-contract]="!contattiCollapsed"
+                                ></i>
+                                Contatti
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="contattiCollapsed">
+                                <div class="flexgrid flexgrid--3 mt-2">
+        
+                                    <app-input
+                                        name="telefono"
+                                        label="Telefono personale"
+                                        [ngControl]="form1.controls['telefono']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="cellulare"
+                                        label="Cellulare personale"
+                                        [ngControl]="form1.controls['cellulare']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="email"
+                                        label="Email personale"
+                                        [ngControl]="form1.controls['email']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-2 px-3 mt-3">
+                            <button class="btn text-muted" (click)="altroCollapsed = !altroCollapsed">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="altroCollapsed"
+                                    [class.bi-chevron-contract]="!altroCollapsed"
+                                ></i>
+                                Altro
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="altroCollapsed">
+                                <div class="flexgrid flexgrid--3 mt-2">
+        
+                                    <app-input
+                                        type="select"
+                                        name="statoCivile"
+                                        label="Stato civile"
+                                        [options]="statiCivili"
+                                        [ngControl]="form1.controls['statoCivile']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        type="select"
+                                        name="datiRiservati"
+                                        label="Dati riservati"
+                                        [options]="booleans"
+                                        [ngControl]="form1.controls['datiRiservati']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        type="select"
+                                        name="socioScai"
+                                        label="Socio SCAI"
+                                        [options]="booleans"
+                                        [ngControl]="form1.controls['socioScai']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </form>
 
@@ -79,7 +290,118 @@
 
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
-                        <div class="flexgrid flexgrid--2">
+                        <div class="text-muted">Aziendali</div>
+                        <div class="flexgrid flexgrid--4">
+
+                            <app-input
+                                name="gruppo"
+                                label="Gruppo"
+                                [ngControl]="form2.controls['gruppo']"
+                                [floatingLabel]="true"
+                            />
+
+                            <app-input
+                                name="numeroBadge"
+                                label="Nr. badge"
+                                [ngControl]="form2.controls['numeroBadge']"
+                                [floatingLabel]="true"
+                            />
+
+                            <app-input
+                                name="tecnoCode"
+                                label="Tecno code"
+                                [ngControl]="form2.controls['tecnoCode']"
+                                [floatingLabel]="true"
+                            />
+
+                            <app-input
+                                name="uuidWelcome"
+                                label="UUID welcome"
+                                [ngControl]="form2.controls['uuidWelcome']"
+                                [floatingLabel]="true"
+                            />
+                        </div>
+
+                        <div class="border rounded p-2 px-3 mt-3">
+                            <button class="btn text-muted" (click)="contattiProfessionaliCollapse = !contattiProfessionaliCollapse">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="contattiProfessionaliCollapse"
+                                    [class.bi-chevron-contract]="!contattiProfessionaliCollapse"
+                                ></i>
+                                Contatti
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="contattiProfessionaliCollapse">
+                                <div class="flexgrid flexgrid--4 mt-2">
+        
+                                    <app-input
+                                        name="fax"
+                                        label="Fax"
+                                        [ngControl]="form2.controls['fax']"
+                                        [floatingLabel]="true"
+                                    />
+        
+                                    <app-input
+                                        name="telefono"
+                                        label="Telefono aziendale"
+                                        [ngControl]="form2.controls['telefono']"
+                                        [floatingLabel]="true"
+                                    />
+        
+                                    <app-input
+                                        name="cellulare"
+                                        label="Cellulare aziendale"
+                                        [ngControl]="form2.controls['cellulare']"
+                                        [floatingLabel]="true"
+                                    />
+        
+                                    <app-input
+                                        name="email"
+                                        label="Email aziendale"
+                                        [ngControl]="form2.controls['emailAziendale']"
+                                        [floatingLabel]="true"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border rounded p-2 px-3 mt-3">
+                            <button class="btn text-muted" (click)="noteCollapsed = !noteCollapsed">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="noteCollapsed"
+                                    [class.bi-chevron-contract]="!noteCollapsed"
+                                ></i>
+                                Note
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="noteCollapsed">
+                                <div class="flexgrid flexgrid--2 mt-2">
+
+                                    <app-input
+                                        type="textarea"
+                                        name="descrizioneSedeLavoro"
+                                        label="Descrizione sede lavoro"
+                                        [ngControl]="form2.controls['descrizioneSedeLavoro']"
+                                        [floatingLabel]="true"
+                                    />
+        
+                                    <app-input
+                                        type="textarea"
+                                        name="descrizioneUfficio"
+                                        label="Descrizione ufficio"
+                                        [ngControl]="form2.controls['descrizioneUfficio']"
+                                        [floatingLabel]="true"
+                                    />
+        
+                                    <app-input
+                                        type="textarea"
+                                        name="note"
+                                        label="Note"
+                                        [ngControl]="form2.controls['note']"
+                                        [floatingLabel]="true"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </form>
 
@@ -113,6 +435,49 @@
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
                         <div class="flexgrid flexgrid--3 mb-3">
+                        </div>
+
+                        <div class="text-muted px-3 pt-2 mb-2">
+                            Per salvare i cambiamenti ai profili è necessario premere sul tasto "Salva <i class="bi bi-save-fill"></i>" in basso
+                        </div>
+                        <div class="border rounded shadow mb-3">
+                            <app-table
+                                #dt
+                                [thead]="thead"
+                                [tbody]="tbody"
+                                [animated]="true"
+                                [items]="abilitazioni"
+                                [searchable]="[ 'aziendaDelGruppo', 'profiliFunzioni' ]"
+                                [paginated]="true"
+                                [pageSize]="5"
+                            >
+    
+                                <ng-template #thead>
+                                    <th sortable="aziendaDelGruppo" (sort)="dt.sort($event)">Azienda</th>
+                                    <th sortable="profiliFunzioni" (sort)="dt.sort($event)">Profilo</th>
+                                    <th style="width: 10rem"></th>
+                                </ng-template>
+    
+                                <ng-template #tbody let-item let-term$="term$">
+                                    <td data-label="Azienda">
+                                        <ngb-highlight [result]="item.aziendaDelGruppo" [term]="$any(term$ | async)"/>
+                                    </td>
+                                    <td data-label="Profilo">
+                                        <ngb-highlight [result]="item.profiliFunzioni" [term]="$any(term$ | async)"/>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger shadow"
+                                                (click)="deleteProfilo(item)"
+                                            >
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </ng-template>
+                            </app-table>
                         </div>
 
                         <div *ngIf="!readonlyItem" class="text-center pt-3">

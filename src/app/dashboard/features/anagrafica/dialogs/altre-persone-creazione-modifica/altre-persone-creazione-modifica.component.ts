@@ -39,6 +39,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         nome: new FormControl("", [ Validators.required ]),
         azienda: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
         referente: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
+        referenteCliente: new FormControl<boolean>(false),
         auguri: new FormControl<boolean>(false)
     });
 
@@ -50,7 +51,6 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         tecnoCode: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
         cellulare: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
         email: new FormControl("", [ Validators.email ]),
-        referenteCliente: new FormControl<boolean>(false),
         indirizzo: new FormControl<string | null>(null),
         citta: new FormControl(""),
         provincia: new FormControl(""),
@@ -60,9 +60,9 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     // Stage 3
     form3 = new FormGroup({
-        telefonoPrivata: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
-        cellularePrivata: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
-        emailPrivata: new FormControl("", [ Validators.email ])
+        telefonoPersonale: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        cellularePersonale: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
+        emailPersonale: new FormControl("", [ Validators.email ])
     });
 
     constructor(
@@ -163,6 +163,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                 cognome: this.contatto.cognome,
                 nome: this.contatto.nome,
                 titolo: this.contatto.idTitolo,
+                referenteCliente: this.contatto.referenteTerzaParte,
                 auguri: this.contatto.valido
             });
 
@@ -186,7 +187,6 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                 telefono: this.contatto.telefono,
                 cellulare: this.contatto.cellulare,
                 email: this.contatto.email,
-                referenteCliente: this.contatto.referenteTerzaParte,
                 citta: this.contatto.comune,
                 provincia: this.contatto.denominazione,
                 cap: this.contatto.cap,
@@ -210,9 +210,9 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
             // Stage 3
             this.form3.patchValue({
-                telefonoPrivata: this.contatto.telefonoPrivata,
-                cellularePrivata: this.contatto.cellularePrivata,
-                emailPrivata: this.contatto.emailPrivata
+                telefonoPersonale: this.contatto.telefonoPrivata,
+                cellularePersonale: this.contatto.cellularePrivata,
+                emailPersonale: this.contatto.emailPrivata
             });
             
             this.loading = false;
@@ -228,26 +228,26 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
             idUtente: null,
 
-            idTitolo:       this.form1.value.titolo!,
-            cognome:        this.form1.value.cognome!,
-            nome:           this.form1.value.nome!,
-            idTerzaParte:   this.form1.value.azienda?.id!,
-            idReferente:    this.form1.value.referente?.id!,
-            valido:         this.form1.value.auguri!,
+            idTitolo:               this.form1.value.titolo!,
+            cognome:                this.form1.value.cognome!,
+            nome:                   this.form1.value.nome!,
+            idTerzaParte:           this.form1.value.azienda?.id!,
+            idReferente:            this.form1.value.referente?.id!,
+            referenteTerzaParte:    this.form1.value.referenteCliente!,
+            valido:                 this.form1.value.auguri!,
 
-            tecnoCode:              this.form2.value.tecnoCode,
-            telefono:               this.form2.value.telefono,
-            cellulare:              this.form2.value.cellulare,
-            email:                  this.form2.value.email,
-            referenteTerzaParte:    this.form2.value.referenteCliente!,
-            indirizzo:              this.form2.value.indirizzo,
-            comune:                 this.form2.value.citta,
-            cap:                    this.form2.value.cap,
-            note:                   this.form2.value.note,
+            tecnoCode:  this.form2.value.tecnoCode,
+            telefono:   this.form2.value.telefono,
+            cellulare:  this.form2.value.cellulare,
+            email:      this.form2.value.email,
+            indirizzo:  this.form2.value.indirizzo,
+            comune:     this.form2.value.citta,
+            cap:        this.form2.value.cap,
+            note:       this.form2.value.note,
 
-            telefonoPrivata:    this.form3.value.telefonoPrivata,
-            cellularePrivata:   this.form3.value.cellularePrivata,
-            emailPrivata:       this.form3.value.emailPrivata
+            telefonoPrivata:    this.form3.value.telefonoPersonale,
+            cellularePrivata:   this.form3.value.cellularePersonale,
+            emailPrivata:       this.form3.value.emailPersonale
         };
     }
 

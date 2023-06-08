@@ -79,7 +79,7 @@ export class AltrePersoneComponent {
   getCreazioneModificaDialog() {
     return this.modalService.open(
       AltrePersoneCreazioneModifica,
-      { size: 'lg', centered: true }
+      { size: 'xl', centered: true }
     );
   }
 
