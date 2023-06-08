@@ -8,6 +8,7 @@ import { PrepareObject } from "../../models/prepare-object";
 import { lastValueFrom } from "rxjs";
 import { ToastService } from "src/app/services/toast.service";
 import { PersoneOrganicoService } from "../../services/persone-organico.service";
+import { SelectOption } from "src/app/shared/components/input/input.component";
 
 @Component({
     standalone: true,
@@ -25,17 +26,20 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     loading = false;
 
     // Stage 1
-    titoli: { value: number, text: string }[] = [];
-    generiBiologici = [];
+    titoli: SelectOption[] = [];
+    generiBiologici = [
+        { value: "M", text: "Maschio" },
+        { value: "F", text: "Femmina" }
+    ];
     statiCivili = [];
-    titoliStudio = [];
-    materieStudio = [];
+    titoliStudio: SelectOption[] = [];
+    materieStudio: SelectOption[] = [];
 
     form1 = new FormGroup({
 
+        titolo: new FormControl(1),
         cognome: new FormControl("", [ Validators.required ]),
         nome: new FormControl("", [ Validators.required ]),
-        titolo: new FormControl(1),
         dataNascita: new FormControl(),
         luogoNascita: new FormControl(),
         provinciaNascita: new FormControl(),
@@ -58,7 +62,24 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     // Stage 2
 
-    form2 = new FormGroup({});
+    form2 = new FormGroup({
+
+        tecnoCode: new FormControl(),
+        telefono: new FormControl(),
+        cellulare: new FormControl(),
+        email: new FormControl(),
+        fax: new FormControl(),
+        numeroBadge: new FormControl(),
+        uuidWelcome: new FormControl(),
+        descrizioneSedeLavoro: new FormControl(),
+        descrizioneUfficio: new FormControl(),
+
+        socioScai: new FormControl<boolean>(false),
+        emailAziendale: new FormControl(),
+        gruppo: new FormControl(),
+        datiRiservati: new FormControl<boolean>(false),
+        note: new FormControl()
+    });
 
     // Stage 3
 

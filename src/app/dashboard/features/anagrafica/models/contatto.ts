@@ -44,7 +44,7 @@ export interface SaveContattoParam {
     nome: string;
     idTerzaParte: number,
     idReferente: number,
-    valido: boolean; // THIS IS true WHY? BLAME THE BE!!!
+    valido: boolean;
     tecnoCode?: string | null;
     telefono?: string | null;
     cellulare?: string | null;
