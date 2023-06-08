@@ -6,6 +6,7 @@ import { PrepareObject } from '../models/prepare-object';
 import { PersoneOrganicoService } from '../services/persone-organico.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PersoneOrganicoCreazioneModifica } from '../dialogs/persone-organico-creazione-modifica/persone-organico-creazione-modifica.component';
+import { SelectOption } from 'src/app/shared/components/input/input.component';
 
 @Component({
   selector: 'app-persone-organico',
@@ -24,7 +25,7 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
   nomeCtrl = new FormControl();
   nrBadgeCtrl = new FormControl();
   
-  tipiUtente: { value: number | null, text: string }[] = [];
+  tipiUtente: SelectOption[] = [];
   tipoUtenteCtrl = new FormControl();
 
   businessUnit: PrepareObject[] = [];

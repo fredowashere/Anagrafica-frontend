@@ -6,6 +6,7 @@ import { PrepareObject } from '../models/prepare-object';
 import { AltreAziendeService } from '../services/altre-aziende.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AltreAziendeCreazioneModifica } from '../dialogs/altre-aziende-creazione-modifica/altre-aziende-creazione-modifica.component';
+import { SelectOption } from 'src/app/shared/components/input/input.component';
 
 @Component({
   selector: 'app-altre-aziende',
@@ -33,7 +34,7 @@ export class AltreAziendeComponent {
   businessUnit: PrepareObject[] = [];
   businessUnitCtrl = new FormControl();
 
-  tipi: { value: number | null, text: string }[] = [];
+  tipi: SelectOption[] = [];
   tipoCtrl = new FormControl();
 
   settoriMerceologici: PrepareObject[] = [];

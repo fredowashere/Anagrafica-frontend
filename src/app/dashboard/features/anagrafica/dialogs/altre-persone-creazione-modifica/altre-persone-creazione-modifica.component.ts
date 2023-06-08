@@ -10,6 +10,7 @@ import { AltrePersoneService } from "../../services/altre-persone.service";
 import { cellulareRegExp, telefonoRegExp } from "src/app/utils/regex";
 import { lookmap, singlifyLookmap } from "src/app/utils/object";
 import { ToastService } from "src/app/services/toast.service";
+import { SelectOption } from "src/app/shared/components/input/input.component";
 
 @Component({
     standalone: true,
@@ -27,22 +28,22 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     loading = false;
 
     // Stage 1
-    titoli: { value: number, text: string }[] = [];
+    titoli: SelectOption[] = [];
     aziende: PrepareObject[] = [];
     autocompleteFormatter = (po: PrepareObject) => po.descrizione;
     referenti: PrepareObject[] = [];
 
     form1 = new FormGroup({
+        titolo: new FormControl(1),
         cognome: new FormControl("", [ Validators.required ]),
         nome: new FormControl("", [ Validators.required ]),
-        titolo: new FormControl(1),
         azienda: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
         referente: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
         auguri: new FormControl<boolean>(false)
     });
 
     // Stage 2
-    indirizzi: { value: string, text: string }[] = [];
+    indirizzi: SelectOption[] = [];
 
     form2 = new FormGroup({
         telefono: new FormControl(""),
