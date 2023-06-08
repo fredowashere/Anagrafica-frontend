@@ -1,3 +1,5 @@
+import { PrepareObject } from "./prepare-object";
+
 export interface FindPersonParam {
     nome?: string;
     cognome?: string;
@@ -61,7 +63,7 @@ export interface DettaglioPersona {
     cellulare: string;
     telefonoProfessionale: string;
     cellulareProfessionale: string;
-    sedeLavoro: string | null;
+    sedeLavoro: PrepareObject | null;
     badge: string;
     descrizioneSedeLavoro: string;
     technocode: string;
