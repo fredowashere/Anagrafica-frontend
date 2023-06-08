@@ -35,7 +35,7 @@
                                 name="titolo"
                                 label="Titolo *"
                                 [options]="titoli"
-                                [ngControl]="titoloCtrl"
+                                [ngControl]="form1.controls['titolo']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -43,7 +43,7 @@
                             <app-input
                                 name="cognome"
                                 label="Cognome *"
-                                [ngControl]="cognomeCtrl"
+                                [ngControl]="form1.controls['cognome']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -51,7 +51,7 @@
                             <app-input
                                 name="nome"
                                 label="Nome *"
-                                [ngControl]="nomeCtrl"
+                                [ngControl]="form1.controls['nome']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -67,7 +67,7 @@
                                 [template]="autocompleteTemplate"
                                 [formatter]="autocompleteFormatter"
                                 [limit]="25"
-                                [ngControl]="aziendaCtrl"
+                                [ngControl]="form1.controls['azienda']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -79,7 +79,7 @@
                                 [options]="referenti"
                                 [template]="autocompleteTemplate"
                                 [formatter]="autocompleteFormatter"
-                                [ngControl]="referenteCtrl"
+                                [ngControl]="form1.controls['referente']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -88,7 +88,7 @@
                                 type="checkbox"
                                 name="auguri"
                                 label="Auguri di compleanno"
-                                [ngControl]="auguriCtrl"
+                                [ngControl]="form1.controls['auguri']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -98,7 +98,7 @@
                     <div class="text-end">
                         <button
                             class="btn btn-outline-primary"
-                            [disabled]="!readonlyItem && stage1Form.invalid"
+                            [disabled]="!readonlyItem && form1.invalid"
                             (click)="nav.select(2)"
                         >
                             Prossimo <i class="bi bi-caret-right-fill"></i>
@@ -107,7 +107,7 @@
                 </ng-template>
             </ng-container>
 
-            <ng-container [ngbNavItem]="2" [disabled]="!readonlyItem && stage1Form.invalid">
+            <ng-container [ngbNavItem]="2" [disabled]="!readonlyItem && form1.invalid">
                 <a ngbNavLink class="wiz__step">
                     <div class="wiz__title d-md-none">Step 2</div>
                     <div class="wiz__descr">Recapiti professionali</div>
@@ -121,7 +121,7 @@
                             <app-input
                                 name="telefono"
                                 label="Telefono"
-                                [ngControl]="telefonoCtrl"
+                                [ngControl]="form2.controls['telefono']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -129,7 +129,7 @@
                             <app-input
                                 name="cellulare"
                                 label="Cellulare"
-                                [ngControl]="cellulareCtrl"
+                                [ngControl]="form2.controls['cellulare']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -137,7 +137,7 @@
                             <app-input
                                 name="tecnoCode"
                                 label="Tecno code"
-                                [ngControl]="tecnoCodeCtrl"
+                                [ngControl]="form2.controls['tecnoCode']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -145,7 +145,7 @@
                             <app-input
                                 name="email"
                                 label="Email"
-                                [ngControl]="emailCtrl"
+                                [ngControl]="form2.controls['email']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -154,7 +154,7 @@
                                 type="checkbox"
                                 name="referenteCliente"
                                 label="Referente cliente"
-                                [ngControl]="referenteClienteCtrl"
+                                [ngControl]="form2.controls['referenteCliente']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -163,13 +163,11 @@
                         <div class="flexgrid flexgrid--2 mb-3">
 
                             <app-input
-                                type="autocomplete"
+                                type="select"
                                 name="indirizzo"
                                 label="Indirizzo"
                                 [options]="indirizzi"
-                                [template]="autocompleteTemplate"
-                                [formatter]="autocompleteFormatter"
-                                [ngControl]="indirizzoCtrl"
+                                [ngControl]="form2.controls['indirizzo']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem || !indirizzi.length"
                             />
@@ -177,7 +175,7 @@
                             <app-input
                                 name="citta"
                                 label="Città"
-                                [ngControl]="cittaCtrl"
+                                [ngControl]="form2.controls['citta']"
                                 [floatingLabel]="true"
                                 [disabled]="true"
                             />
@@ -185,7 +183,7 @@
                             <app-input
                                 name="provincia"
                                 label="Provincia"
-                                [ngControl]="provinciaCtrl"
+                                [ngControl]="form2.controls['provincia']"
                                 [floatingLabel]="true"
                                 [disabled]="true"
                             />
@@ -193,7 +191,7 @@
                             <app-input
                                 name="cap"
                                 label="CAP"
-                                [ngControl]="capCtrl"
+                                [ngControl]="form2.controls['cap']"
                                 [floatingLabel]="true"
                                 [disabled]="true"
                             />
@@ -204,7 +202,7 @@
                                 type="textarea"
                                 name="note"
                                 label="Note"
-                                [ngControl]="noteCtrl"
+                                [ngControl]="form2.controls['note']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -222,7 +220,7 @@
 
                         <button
                             class="btn btn-outline-primary"
-                            [disabled]="!readonlyItem && (stage1Form.invalid || stage2Form.invalid)"
+                            [disabled]="!readonlyItem && (form1.invalid || form2.invalid)"
                             (click)="nav.select(3)"
                         >
                             Prossimo <i class="bi bi-caret-right-fill"></i>
@@ -231,7 +229,7 @@
                 </ng-template>
             </ng-container>
 
-            <ng-container [ngbNavItem]="3" [disabled]="!readonlyItem && (stage1Form.invalid || stage2Form.invalid)">
+            <ng-container [ngbNavItem]="3" [disabled]="!readonlyItem && (form1.invalid || form2.invalid)">
                 <a ngbNavLink class="wiz__step">
                     <div class="wiz__title d-md-none">Step 3</div>
                     <div class="wiz__descr">Recapiti personali</div>
@@ -245,7 +243,7 @@
                             <app-input
                                 name="telefonoPersonale"
                                 label="Telefono"
-                                [ngControl]="telefonoPrivataCtrl"
+                                [ngControl]="form3.controls['telefonoPrivata']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -253,7 +251,7 @@
                             <app-input
                                 name="cellularePersonale"
                                 label="Cellulare"
-                                [ngControl]="cellularePrivataCtrl"
+                                [ngControl]="form3.controls['cellularePrivata']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -261,7 +259,7 @@
                             <app-input
                                 name="emailPersonale"
                                 label="Email"
-                                [ngControl]="emailPrivataCtrl"
+                                [ngControl]="form3.controls['emailPrivata']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -270,7 +268,7 @@
                         <div *ngIf="!readonlyItem" class="text-center pt-3">
                             <button
                                 class="btn btn-lg btn-primary shadow"
-                                [disabled]="stage1Form.invalid || stage2Form.invalid || stage3Form.invalid"
+                                [disabled]="form1.invalid || form2.invalid || form3.invalid"
                                 (click)="createUpdate()"
                             >
                                 Salva <i class="bi bi-save-fill"></i>

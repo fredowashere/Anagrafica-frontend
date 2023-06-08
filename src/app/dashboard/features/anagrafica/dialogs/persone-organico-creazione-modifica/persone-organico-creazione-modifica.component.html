@@ -29,13 +29,39 @@
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
                         <div class="flexgrid flexgrid--3">
+
+                            <app-input
+                                type="select"
+                                name="titolo"
+                                label="Titolo *"
+                                [options]="titoli"
+                                [ngControl]="form1.controls['titolo']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="cognome"
+                                label="Cognome *"
+                                [ngControl]="form1.controls['cognome']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
+                                name="nome"
+                                label="Nome *"
+                                [ngControl]="form1.controls['nome']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
                         </div>
                     </form>
 
                     <div class="text-end">
                         <button
                             class="btn btn-outline-primary"
-                            [disabled]="!readonlyItem && stage1Form.invalid"
+                            [disabled]="!readonlyItem && form1.invalid"
                             (click)="nav.select(2)"
                         >
                             Prossimo <i class="bi bi-caret-right-fill"></i>
@@ -44,7 +70,7 @@
                 </ng-template>
             </ng-container>
 
-            <ng-container [ngbNavItem]="2" [disabled]="!readonlyItem && stage1Form.invalid">
+            <ng-container [ngbNavItem]="2" [disabled]="!readonlyItem && form1.invalid">
                 <a ngbNavLink class="wiz__step">
                     <div class="wiz__title d-md-none">Step 2</div>
                     <div class="wiz__descr">Dati professionali</div>
@@ -68,7 +94,7 @@
 
                         <button
                             class="btn btn-outline-primary"
-                            [disabled]="!readonlyItem && (stage1Form.invalid || stage2Form.invalid)"
+                            [disabled]="!readonlyItem && (form1.invalid || form2.invalid)"
                             (click)="nav.select(3)"
                         >
                             Prossimo <i class="bi bi-caret-right-fill"></i>
@@ -77,7 +103,7 @@
                 </ng-template>
             </ng-container>
 
-            <ng-container [ngbNavItem]="3" [disabled]="!readonlyItem && (stage1Form.invalid || stage2Form.invalid)">
+            <ng-container [ngbNavItem]="3" [disabled]="!readonlyItem && (form1.invalid || form2.invalid)">
                 <a ngbNavLink class="wiz__step">
                     <div class="wiz__title d-md-none">Step 3</div>
                     <div class="wiz__descr">Ruoli</div>
@@ -92,7 +118,7 @@
                         <div *ngIf="!readonlyItem" class="text-center pt-3">
                             <button
                                 class="btn btn-lg btn-primary shadow"
-                                [disabled]="stage1Form.invalid || stage2Form.invalid || stage3Form.invalid"
+                                [disabled]="form1.invalid || form2.invalid || form3.invalid"
                                 (click)="createUpdate()"
                             >
                                 Salva <i class="bi bi-save-fill"></i>

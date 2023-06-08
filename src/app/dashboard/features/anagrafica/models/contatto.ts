@@ -38,24 +38,24 @@ export interface DettaglioContatto {
 }
 
 export interface SaveContattoParam {
-    idUtente?: number,
+    idUtente?: number | null,
     idTitolo: number,
     cognome: string;
     nome: string;
     idTerzaParte: number,
     idReferente: number,
     valido: boolean; // THIS IS true WHY? BLAME THE BE!!!
-    telefono: string | null;
-    tecnoCode: string | null;
-    cellulare: string | null;
-    email: string | null;
+    tecnoCode?: string | null;
+    telefono?: string | null;
+    cellulare?: string | null;
+    email?: string | null;
     referenteTerzaParte: boolean;
-    indirizzo: string | null;
-    comune: string | null;
-    cap: string | null;
-    note: string | null;
-    telefonoPrivata: string | null;
-    cellularePrivata: string | null;
-    emailPrivata: string | null;
+    indirizzo?: string | null;
+    comune?: string | null;
+    cap?: string | null;
+    note?: string | null;
+    telefonoPrivata?: string | null;
+    cellularePrivata?: string | null;
+    emailPrivata?: string | null;
 }
 

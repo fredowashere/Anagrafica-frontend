@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Contatto, DettaglioContatto } from "../../models/contatto";
+import { Contatto, DettaglioContatto, SaveContattoParam } from "../../models/contatto";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { SharedModule } from "src/app/shared/shared.module";
@@ -27,63 +27,46 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     loading = false;
 
     // Stage 1
-    cognomeCtrl = new FormControl("", [ Validators.required ]);
-    nomeCtrl = new FormControl("", [ Validators.required ]);
     titoli: { value: number, text: string }[] = [];
-    titoloCtrl = new FormControl(1);
     aziende: PrepareObject[] = [];
-    aziendaCtrl = new FormControl<PrepareObject | null>(null, [ Validators.required ]);
     autocompleteFormatter = (po: PrepareObject) => po.descrizione;
     referenti: PrepareObject[] = [];
-    referenteCtrl = new FormControl<PrepareObject | null>(null, [ Validators.required ]); 
-    auguriCtrl = new FormControl<boolean>(false);
 
-    stage1Form = new FormGroup({
-        cognome: this.cognomeCtrl,
-        nome: this.nomeCtrl,
-        titolo: this.titoloCtrl,
-        azienda: this.aziendaCtrl,
-        referente: this.referenteCtrl,
-        auguri: this.auguriCtrl
+    form1 = new FormGroup({
+        cognome: new FormControl("", [ Validators.required ]),
+        nome: new FormControl("", [ Validators.required ]),
+        titolo: new FormControl(1),
+        azienda: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
+        referente: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
+        auguri: new FormControl<boolean>(false)
     });
 
     // Stage 2
-    tecnoCodeCtrl = new FormControl("");
-    telefonoCtrl = new FormControl("", [ Validators.pattern(telefonoRegExp) ]);
-    cellulareCtrl = new FormControl("", [ Validators.pattern(cellulareRegExp) ]);
-    emailCtrl = new FormControl("", [ Validators.email ]);
-    referenteClienteCtrl = new FormControl<boolean>(false);
-    indirizzi: PrepareObject[] = [];
-    indirizzoCtrl = new FormControl<PrepareObject | null>(null);
-    cittaCtrl = new FormControl("");
-    provinciaCtrl = new FormControl("");
-    capCtrl = new FormControl("");
-    noteCtrl = new FormControl("");
+    indirizzi: { value: string, text: string }[] = [];
 
-    stage2Form = new FormGroup({
-        telefono: this.telefonoCtrl,
-        tecnoCode: this.tecnoCodeCtrl,
-        cellulare: this.cellulareCtrl,
-        email: this.emailCtrl,
-        referenteCliente: this.referenteClienteCtrl,
-        indirizzo: this.indirizzoCtrl,
-        note: this.noteCtrl
+    form2 = new FormGroup({
+        telefono: new FormControl(""),
+        tecnoCode: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        cellulare: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
+        email: new FormControl("", [ Validators.email ]),
+        referenteCliente: new FormControl<boolean>(false),
+        indirizzo: new FormControl<string | null>(null),
+        citta: new FormControl(""),
+        provincia: new FormControl(""),
+        cap: new FormControl(""),
+        note: new FormControl("")
     });
 
     // Stage 3
-    telefonoPrivataCtrl = new FormControl("", [ Validators.pattern(telefonoRegExp) ]);
-    cellularePrivataCtrl = new FormControl("", [ Validators.pattern(cellulareRegExp) ]);
-    emailPrivataCtrl = new FormControl("", [ Validators.email ]);
-
-    stage3Form = new FormGroup({
-        telefonoPrivata: this.telefonoPrivataCtrl,
-        cellularePrivata: this.cellularePrivataCtrl,
-        emailPrivata: this.emailPrivataCtrl
+    form3 = new FormGroup({
+        telefonoPrivata: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        cellularePrivata: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
+        emailPrivata: new FormControl("", [ Validators.email ])
     });
 
     constructor(
         public activeModal: NgbActiveModal,
-        private altrePersonseService: AltrePersoneService,
+        private altrePersoneService: AltrePersoneService,
         private toaster: ToastService
     ) {}
 
@@ -94,7 +77,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         // Get autocomplete lists
         [ this.titoli, this.aziende, this.referenti ] = await lastValueFrom(
             combineLatest([
-                this.altrePersonseService
+                this.altrePersoneService
                     .prepareTitoli()
                     .pipe(
                         map(titoli =>
@@ -103,8 +86,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                             )
                         )
                     ),
-                this.altrePersonseService.prepareAziendeClientiTerzeParti(),
-                this.altrePersonseService.prepareReferenti()
+                this.altrePersoneService.prepareAziendeClientiTerzeParti(),
+                this.altrePersoneService.prepareReferenti()
             ])
         );
 
@@ -114,46 +97,54 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         this.loading = false;
 
         // Setup indirizzoCtrl reactivity (autopopulate citta, provincia and cap when possible)
-        this.indirizzoCtrl.valueChanges
+        this.form2.controls["indirizzo"].valueChanges
             .subscribe(async indirizzo => {
 
+                const { citta, provincia, cap } = this.form2.controls;
+
                 if (!indirizzo) {
-                    this.cittaCtrl.reset();
-                    this.provinciaCtrl.reset();
-                    this.capCtrl.reset();
+                    citta.reset();
+                    provincia.reset();
+                    cap.reset();
                     return;
                 }
 
                 const indirizzoInfo = await lastValueFrom(
-                    this.altrePersonseService.prepareIndirizzoInfo({
-                        idTerzaParte: this.aziendaCtrl.value?.id!,
-                        indirizzo: indirizzo.descrizione
+                    this.altrePersoneService.prepareIndirizzoInfo({
+                        indirizzo,
+                        idTerzaParte: this.form1.value.azienda?.id!,
                     })
                 );
 
                 if (!indirizzoInfo) return;
 
-                this.cittaCtrl.setValue(indirizzoInfo.comune);
-                this.provinciaCtrl.setValue(indirizzoInfo.descProvincia);
-                this.capCtrl.setValue(indirizzoInfo.cap);
+                citta.setValue(indirizzoInfo.comune);
+                provincia.setValue(indirizzoInfo.descProvincia);
+                cap.setValue(indirizzoInfo.cap);
             });
 
         // Setup aziendaCtrl reactivity (get indirizzi, autopopulate indirizzo if possible)
-        this.aziendaCtrl.valueChanges
+        this.form1.controls["azienda"].valueChanges
             .subscribe(async azienda => {
 
+                const indirizzoCtrl = this.form2.controls["indirizzo"];
+
                 if (!azienda) {
-                    this.indirizzoCtrl.reset();
+                    indirizzoCtrl.reset();
                     this.indirizzi = [];
                     return;
                 }
 
-                this.indirizzi = await lastValueFrom(
-                    this.altrePersonseService.prepareIndirizzo(azienda.id)
+                const indirizzi = await lastValueFrom(
+                    this.altrePersoneService.prepareIndirizzo(azienda.id)
                 );
 
-                if (this.indirizzi.length === 1)
-                    this.indirizzoCtrl.setValue(this.indirizzi[0]);
+                this.indirizzi = indirizzi
+                    .map(({ descrizione: value }) => ({ value, text: value }));
+                
+                if (this.indirizzi.length === 1) {
+                    indirizzoCtrl.setValue(this.indirizzi[0].value);
+                }
             });
 
         // Populate fields from response
@@ -162,51 +153,101 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             this.loading = true;
 
             this.contatto = await lastValueFrom(
-                this.altrePersonseService.dettaglioContatto(this.itemToUpdate.idUtente)
+                this.altrePersoneService
+                    .dettaglioContatto(this.itemToUpdate.idUtente)
             );
 
             // Stage 1
-            this.cognomeCtrl.setValue(this.contatto.cognome);
-            this.nomeCtrl.setValue(this.contatto.nome);
-            this.titoloCtrl.setValue(this.contatto.idTitolo);
+            this.form1.patchValue({
+                cognome: this.contatto.cognome,
+                nome: this.contatto.nome,
+                titolo: this.contatto.idTitolo,
+                auguri: this.contatto.valido
+            });
 
-            const azienda = this.aziende.find(azienda => azienda.id === this.contatto!.idTerzaParte);
-            if (azienda) this.aziendaCtrl.setValue(azienda);
+            const azienda = this.aziende
+                .find(azienda => azienda.id === this.contatto!.idTerzaParte);
+            
+            if (azienda) {
+                this.form1.controls["azienda"].setValue(azienda);
+            }
 
-            const ref = this.referenti.find(ref => ref.id === this.contatto!.idReferente);
-            if (ref) this.referenteCtrl.setValue(ref);
-
-            this.auguriCtrl.setValue(this.contatto.valido);
+            const ref = this.referenti
+                .find(ref => ref.id === this.contatto!.idReferente);
+            
+            if (ref) {
+                this.form1.controls["referente"].setValue(ref);
+            }
 
             // Stage 2
-            this.telefonoCtrl.setValue(this.contatto.telefono);
-            this.tecnoCodeCtrl.setValue(this.contatto.tecnoCode);
-            this.cellulareCtrl.setValue(this.contatto.cellulare);
-            this.emailCtrl.setValue(this.contatto.email);
-            this.referenteClienteCtrl.setValue(this.contatto.referenteTerzaParte);
+            this.form2.patchValue({
+                tecnoCode: this.contatto.tecnoCode,
+                telefono: this.contatto.telefono,
+                cellulare: this.contatto.cellulare,
+                email: this.contatto.email,
+                referenteCliente: this.contatto.referenteTerzaParte,
+                citta: this.contatto.comune,
+                provincia: this.contatto.denominazione,
+                cap: this.contatto.cap,
+                note: this.contatto.note
+            });
 
-            this.indirizzi = await lastValueFrom(
-                this.altrePersonseService.prepareIndirizzo(this.contatto.idTerzaParte)
+            const indirizzi = await lastValueFrom(
+                this.altrePersoneService
+                    .prepareIndirizzo(this.contatto.idTerzaParte)
             );
-            const indirizzo = this.indirizzi.find(indirizzo => indirizzo.descrizione === this.contatto!.indirizzo);
-            if (indirizzo) this.indirizzoCtrl.setValue(indirizzo);
 
-            this.cittaCtrl.setValue(this.contatto.comune);
-            this.provinciaCtrl.setValue(this.contatto.denominazione);
-            this.capCtrl.setValue(this.contatto.cap);
-            this.noteCtrl.setValue(this.contatto.note);
+            this.indirizzi = indirizzi
+                .map(({ descrizione: value }) => ({ value, text: value }));
+
+            const indirizzo = this.indirizzi
+                .find(indirizzo => indirizzo.value === this.contatto!.indirizzo);
+            
+            if (indirizzo) {
+                this.form2.controls["indirizzo"].setValue(indirizzo.value);
+            }
 
             // Stage 3
-            this.telefonoPrivataCtrl.setValue(this.contatto.telefonoPrivata);
-            this.cellularePrivataCtrl.setValue(this.contatto.cellularePrivata);
-            this.emailPrivataCtrl.setValue(this.contatto.emailPrivata);
+            this.form3.patchValue({
+                telefonoPrivata: this.contatto.telefonoPrivata,
+                cellularePrivata: this.contatto.cellularePrivata,
+                emailPrivata: this.contatto.emailPrivata
+            });
             
             this.loading = false;
 
-            this.stage1Form.markAllAsTouched();
-            this.stage2Form.markAllAsTouched();
-            this.stage3Form.markAllAsTouched();
+            this.form1.markAllAsTouched();
+            this.form2.markAllAsTouched();
+            this.form3.markAllAsTouched();
         }
+    }
+
+    getRequestObjectFromForms(): SaveContattoParam {
+        return {
+
+            idUtente: null,
+
+            idTitolo:       this.form1.value.titolo!,
+            cognome:        this.form1.value.cognome!,
+            nome:           this.form1.value.nome!,
+            idTerzaParte:   this.form1.value.azienda?.id!,
+            idReferente:    this.form1.value.referente?.id!,
+            valido:         this.form1.value.auguri!,
+
+            tecnoCode:              this.form2.value.tecnoCode,
+            telefono:               this.form2.value.telefono,
+            cellulare:              this.form2.value.cellulare,
+            email:                  this.form2.value.email,
+            referenteTerzaParte:    this.form2.value.referenteCliente!,
+            indirizzo:              this.form2.value.indirizzo,
+            comune:                 this.form2.value.citta,
+            cap:                    this.form2.value.cap,
+            note:                   this.form2.value.note,
+
+            telefonoPrivata:    this.form3.value.telefonoPrivata,
+            cellularePrivata:   this.form3.value.cellularePrivata,
+            emailPrivata:       this.form3.value.emailPrivata
+        };
     }
 
     createUpdate() {
@@ -216,32 +257,16 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     async update() {
 
-        if (!this.contatto || this.stage1Form.invalid || this.stage2Form.invalid || this.stage3Form.invalid) return;
+        if (!this.contatto || this.form1.invalid || this.form2.invalid || this.form3.invalid) return;
 
         try {
 
+            const requestObject = this.getRequestObjectFromForms();
+            requestObject.idUtente = this.contatto.idUtente;
+
             await lastValueFrom(
-                this.altrePersonseService.saveContatto({
-                    idUtente: this.contatto.idUtente,
-                    idTitolo: this.titoloCtrl.value!,
-                    cognome: this.cognomeCtrl.value!,
-                    nome: this.nomeCtrl.value!,
-                    idTerzaParte: this.aziendaCtrl.value?.id!,
-                    idReferente: this.referenteCtrl.value?.id!,
-                    valido: this.auguriCtrl.value!,
-                    tecnoCode: this.tecnoCodeCtrl.value,
-                    telefono: this.telefonoCtrl.value,
-                    cellulare: this.cellulareCtrl.value,
-                    email: this.emailCtrl.value,
-                    referenteTerzaParte: this.referenteClienteCtrl.value!,
-                    indirizzo: this.indirizzoCtrl.value?.descrizione!,
-                    comune: this.cittaCtrl.value,
-                    cap: this.capCtrl.value,
-                    note: this.noteCtrl.value,
-                    telefonoPrivata: this.telefonoPrivataCtrl.value,
-                    cellularePrivata: this.cellularePrivataCtrl.value,
-                    emailPrivata: this.emailPrivataCtrl.value
-                })
+                this.altrePersoneService
+                    .saveContatto(requestObject)
             );
 
             this.toaster.show("Contatto modificato con successo!", { classname: "bg-success text-light" });
@@ -254,31 +279,13 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     async create() {
 
-        if (this.stage1Form.invalid || this.stage2Form.invalid || this.stage3Form.invalid) return;
+        if (this.form1.invalid || this.form2.invalid || this.form3.invalid) return;
 
         try {
 
             await lastValueFrom(
-                this.altrePersonseService.saveContatto({
-                    idTitolo: this.titoloCtrl.value!,
-                    cognome: this.cognomeCtrl.value!,
-                    nome: this.nomeCtrl.value!,
-                    idTerzaParte: this.aziendaCtrl.value?.id!,
-                    idReferente: this.referenteCtrl.value?.id!,
-                    valido: this.auguriCtrl.value!,
-                    tecnoCode: this.tecnoCodeCtrl.value,
-                    telefono: this.telefonoCtrl.value,
-                    cellulare: this.cellulareCtrl.value,
-                    email: this.emailCtrl.value,
-                    referenteTerzaParte: this.referenteClienteCtrl.value!,
-                    indirizzo: this.indirizzoCtrl.value?.descrizione!,
-                    comune: this.cittaCtrl.value,
-                    cap: this.capCtrl.value,
-                    note: this.noteCtrl.value,
-                    telefonoPrivata: this.telefonoPrivataCtrl.value,
-                    cellularePrivata: this.cellularePrivataCtrl.value,
-                    emailPrivata: this.emailPrivataCtrl.value
-                })
+                this.altrePersoneService
+                    .saveContatto(this.getRequestObjectFromForms())
             );
 
             this.toaster.show("Contatto creato con successo!", { classname: "bg-success text-light" });
