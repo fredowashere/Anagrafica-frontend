@@ -35,7 +35,7 @@
                                 name="titolo"
                                 label="Titolo *"
                                 [options]="titoli"
-                                [ngControl]="form1.controls['titolo']"
+                                [ngControl]="form1.controls['idTitolo']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -91,7 +91,7 @@
                                 type="checkbox"
                                 name="referenteCliente"
                                 label="Referente cliente"
-                                [ngControl]="form1.controls['referenteCliente']"
+                                [ngControl]="form1.controls['referenteTerzaParte']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -100,7 +100,7 @@
                                 type="checkbox"
                                 name="auguri"
                                 label="Auguri"
-                                [ngControl]="form1.controls['auguri']"
+                                [ngControl]="form1.controls['valido']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -186,7 +186,7 @@
                             <app-input
                                 name="provincia"
                                 label="Provincia"
-                                [ngControl]="form2.controls['provincia']"
+                                [ngControl]="form2.controls['denominazione']"
                                 [floatingLabel]="true"
                                 [disabled]="true"
                             />
@@ -247,7 +247,7 @@
                             <app-input
                                 name="telefonoPersonale"
                                 label="Telefono personale"
-                                [ngControl]="form3.controls['telefonoPersonale']"
+                                [ngControl]="form3.controls['telefonoPrivata']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -255,7 +255,7 @@
                             <app-input
                                 name="cellularePersonale"
                                 label="Cellulare personale"
-                                [ngControl]="form3.controls['cellularePersonale']"
+                                [ngControl]="form3.controls['cellularePrivata']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
@@ -263,7 +263,7 @@
                             <app-input
                                 name="emailPersonale"
                                 label="Email personale"
-                                [ngControl]="form3.controls['emailPersonale']"
+                                [ngControl]="form3.controls['emailPrivata']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />

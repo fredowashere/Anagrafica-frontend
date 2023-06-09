@@ -8,8 +8,9 @@ import { combineLatest, lastValueFrom, map } from "rxjs";
 import { ToastService } from "src/app/services/toast.service";
 import { PersoneOrganicoService } from "../../services/persone-organico.service";
 import { SelectOption } from "src/app/shared/components/input/input.component";
-import { Abilitazione, DettaglioPersona, Person } from "../../models/persona";
+import { Abilitazione, DettaglioPersona, Persona, Provincia } from "../../models/persona";
 import { AziendaInfo, MiscDataService } from "../../../commons/services/miscellaneous-data.service";
+import { AuthService } from "src/app/services/auth.service";
 
 @Component({
     standalone: true,
@@ -19,7 +20,7 @@ import { AziendaInfo, MiscDataService } from "../../../commons/services/miscella
 })
 export class PersoneOrganicoCreazioneModifica implements OnInit {
 
-    @Input("itemToUpdate") itemToUpdate?: Person;
+    @Input("itemToUpdate") itemToUpdate?: Persona;
     @Input("readonlyItem") readonlyItem = false;
     persona?: DettaglioPersona;
     loading = false;
@@ -29,73 +30,68 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         { value: true, text: "Si" }
     ];
 
-    // Stage 1
-    istruzioneCollapsed = !this.readonlyItem;
-    residenzaCollapsed = !this.readonlyItem;
-    contattiCollapsed = !this.readonlyItem;
-    altroCollapsed = !this.readonlyItem;
+    collapsed: { [key: string]: boolean } = {
+        istruzione: true,
+        residenza: true,
+        contatti: true,
+        altro: true,
+        contattiProfessionali: true,
+        note: true
+    }
 
+    // Stage 1
     titoli: SelectOption[] = [];
     generiBiologici = [
         { value: "M", text: "Maschio" },
         { value: "F", text: "Femmina" }
     ];
     statiCivili: SelectOption[] = [];
-    titoliStudio: PrepareObject[] = [];
-    materieStudio: PrepareObject[] = [];
+    titoliStudio: SelectOption[] = [];
+    materieStudio: SelectOption[] = [];
+    province: Provincia[] = [];
     autoFormatter = (obj: any) => obj.descrizione;
 
     form1 = new FormGroup({
-
         titolo: new FormControl(1),
         cognome: new FormControl("", [ Validators.required ]),
         nome: new FormControl("", [ Validators.required ]),
-        genereBiologico: new FormControl("M", [ Validators.required ]),
-        dataNascita: new FormControl(),
-        luogoNascita: new FormControl(),
-        provinciaNascita: new FormControl(),
-        nazionalita: new FormControl(),
-        codiceFiscale: new FormControl(),
-        statoCivile: new FormControl(),
-        titoloStudio: new FormControl(),
-        materiaStudio: new FormControl(),
-
-        indirizzo: new FormControl(),
-        cap: new FormControl(),
-        citta: new FormControl(),
-        provinciaResidenza: new FormControl(),
-
-        telefono: new FormControl(),
-        cellulare: new FormControl(),
-        email: new FormControl(),
+        sesso: new FormControl("M", [ Validators.required ]),
+        dataDiNascita: new FormControl(""),
+        luogoNascita: new FormControl(""),
+        provinciaDiNascita: new FormControl<Provincia | null>(null),
+        nazionalita: new FormControl(""),
+        codFiscale: new FormControl(""),
+        titoloStudio: new FormControl<number | null>(null),
+        titoloStudioArea: new FormControl<number | null>(null),
+        indirizzo: new FormControl(""),
+        cap: new FormControl(""),
+        citta: new FormControl(""),
+        provinciaDiResidenza: new FormControl<Provincia | null>(null),
+        telefono: new FormControl(""),
+        cellulare: new FormControl(""),
+        email: new FormControl(""),
+        emailProfessionale: new FormControl(""),
+        statoCivile: new FormControl<number | null>(null),
         socioScai: new FormControl<boolean>(false),
         datiRiservati: new FormControl<boolean>(false)
     });
 
     // Stage 2
-    contattiProfessionaliCollapse = !this.readonlyItem;
-    noteCollapsed = !this.readonlyItem;
-
     form2 = new FormGroup({
-
-        tecnoCode: new FormControl(),
-        uuidWelcome: new FormControl(),
-        numeroBadge: new FormControl(),
-        gruppo: new FormControl(),
-
-        telefono: new FormControl(),
-        fax: new FormControl(),
-        cellulare: new FormControl(),
-        emailAziendale: new FormControl(),
-
-        descrizioneSedeLavoro: new FormControl(),
-        descrizioneUfficio: new FormControl(),
-
-        note: new FormControl()
+        technocode: new FormControl(""),
+        uuidWelcome: new FormControl(""),
+        badge: new FormControl(""),
+        gruppo: new FormControl(""),
+        telefonoProfessionale: new FormControl(""),
+        fax: new FormControl(""),
+        cellulareProfessionale: new FormControl(""),
+        emailAziendaleIntranet: new FormControl(""),
+        descrizioneSedeLavoro: new FormControl(""),
+        descrizioneUfficio: new FormControl(""),
+        noteSocioScai: new FormControl("")
     });
 
     // Stage 3
-    aziende: AziendaInfo[] = [];
     profili: PrepareObject[] = [];
     abilitazioni: Abilitazione[] = [];
 
@@ -106,44 +102,44 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     constructor(
         public activeModal: NgbActiveModal,
-        private miscData: MiscDataService,
+        public miscData: MiscDataService,
+        private authService: AuthService,
         private personeOrganicoService: PersoneOrganicoService,
         private toaster: ToastService
     ) {}
 
     async ngOnInit() {
 
-        this.aziende = this.miscData.aziende;
+        // Open all collapse if readonly
+        Object.keys(this.collapsed)
+            .forEach(key => this.collapsed[key] = !this.readonlyItem);
 
         this.loading = true;
+
+        const prepare2Option = (objects: PrepareObject[]) =>
+            objects.map(({ id, descrizione }) =>
+                ({ value: id, text: descrizione })
+            );
 
         [ 
             this.titoli,
             this.statiCivili,
             this.titoliStudio,
+            this.province,
             this.profili,
             this.abilitazioni
         ] = await lastValueFrom(
             combineLatest([
                 this.personeOrganicoService
                     .prepareTitoliInsertPerson()
-                    .pipe(
-                        map(titoli =>
-                            titoli.map(({ id, descrizione }) =>
-                                ({ value: id, text: descrizione })
-                            )
-                        )
-                    ),
+                    .pipe(map(prepare2Option)),
                 this.personeOrganicoService
                     .prepareStatoCivile()
-                    .pipe(
-                        map(statoCivile =>
-                            statoCivile.map(({ id, descrizione }) =>
-                                ({ value: id, text: descrizione })
-                            )
-                        )
-                    ),
-                this.personeOrganicoService.prepareTitoliStudio(),
+                    .pipe(map(prepare2Option)),
+                this.personeOrganicoService
+                    .prepareTitoliStudio()
+                    .pipe(map(prepare2Option)),
+                this.personeOrganicoService.prepareProvince(),
                 this.personeOrganicoService.prepareProfiloFunzioni(),
                 this.personeOrganicoService.prepareAbilitazioni()
                     .pipe(
@@ -161,14 +157,15 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
         this.form1.controls["titoloStudio"]
             .valueChanges
-            .subscribe(async titoloStudio => {
+            .subscribe(async idTitolo => {
 
-                this.form1.controls["materiaStudio"].reset();
+                this.form1.controls["titoloStudioArea"].reset();
 
-                if (titoloStudio) {
+                if (idTitolo) {
                     this.materieStudio = await lastValueFrom(
                         this.personeOrganicoService
-                            .prepareTitoliStudioArea(titoloStudio.id)
+                            .prepareTitoliStudioArea(idTitolo)
+                            .pipe(map(prepare2Option))
                     );
                 }
             });
@@ -194,13 +191,47 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
                 )
                 .map(abilitazione => ({ ...abilitazione, default: false }));
 
-            this.abilitazioni.push(...abilitazioniPersona);
+            this.abilitazioni.unshift(...abilitazioniPersona);
+
+            // Stage 1
+            this.form1.patchValue({ ...this.persona });
+
+            // Stage 2
+            this.form2.patchValue({ ...this.persona });
             
             this.loading = false;
 
             this.form1.markAllAsTouched();
             this.form2.markAllAsTouched();
         }
+    }
+
+    getRequest(idUtente: number | null = null) {
+
+        const dettaglioPersona: any = {
+            idUtente,
+            ...this.form1.value,
+            ...this.form2.value,
+            abilitazioni: this.abilitazioni,
+            logo: {},
+            sign: {}
+        };
+
+        // God only knows why sedeLavoro must be passed in creation
+        // but it doesn't persist on the resource
+        if (idUtente) {
+            dettaglioPersona.sedeLavoro = null;
+        }
+        else {
+            dettaglioPersona.sedeLavoro = {
+                id: this.authService.user.idAzienda,
+                descrizione: null,
+                tipo: null,
+                code: null
+            };
+        }
+
+        return dettaglioPersona as DettaglioPersona;
     }
 
     createUpdate() {
@@ -210,13 +241,16 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     async update() {
 
-        if (!this.persona || this.form1.invalid || this.form2.invalid || this.form3.invalid) return;
+        if (!this.persona || this.form1.invalid || this.form2.invalid) return;
 
         try {
 
-            // await lastValueFrom(
-
-            // );
+            await lastValueFrom(
+                this.personeOrganicoService
+                    .salvaModificaInserimento(
+                        this.getRequest(this.persona.idUtente)
+                    )
+            );
 
             this.toaster.show("Persona modificata con successo!", { classname: "bg-success text-light" });
             this.activeModal.close();
@@ -232,9 +266,12 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
         try {
 
-            // await lastValueFrom(
-
-            // );
+            await lastValueFrom(
+                this.personeOrganicoService
+                .salvaModificaInserimento(
+                    this.getRequest()
+                )
+            );
 
             this.toaster.show("Persona creata con successo!", { classname: "bg-success text-light" });
             this.activeModal.close();

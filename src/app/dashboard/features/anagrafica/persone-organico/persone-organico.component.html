@@ -164,12 +164,29 @@
                 <td data-label="Autenticabile">{{ item.autenticabile ? 'SI' : 'NO' }}</td>
                 <td>
                     <div class="d-flex gap-2 justify-content-center">
+                        
+                        <button
+                            type="button"
+                            class="btn btn-primary shadow"
+                            (click)="readonly(item)"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+
                         <button
                             type="button"
                             class="btn btn-warning shadow"
                             (click)="update(item)"
                         >
                             <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger shadow"
+                            (click)="delete(item)"
+                        >
+                            <i class="bi bi-trash3"></i>
                         </button>
                     </div>
                 </td>

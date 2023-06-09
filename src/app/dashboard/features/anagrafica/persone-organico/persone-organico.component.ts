@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject, merge, of, switchMap, takeUntil, tap } from 'rxjs';
-import { Person } from '../models/persona';
+import { Subject, lastValueFrom, merge, of, switchMap, takeUntil, tap } from 'rxjs';
+import { Persona } from '../models/persona';
 import { PrepareObject } from '../models/prepare-object';
 import { PersoneOrganicoService } from '../services/persone-organico.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PersoneOrganicoCreazioneModifica } from '../dialogs/persone-organico-creazione-modifica/persone-organico-creazione-modifica.component';
 import { SelectOption } from 'src/app/shared/components/input/input.component';
+import { EliminazioneDialog } from '../../commons/dialogs/eliminazione.dialog';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-persone-organico',
@@ -19,7 +21,7 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
   isLoading = false;
   init = false;
-  persone: Person[] = [];
+  persone: Persona[] = [];
 
   cognomeCtrl = new FormControl();
   nomeCtrl = new FormControl();
@@ -41,7 +43,8 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
 
   constructor(
     private personeOrganicoService: PersoneOrganicoService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private toaster: ToastService
   ) {}
 
   ngOnInit() {
@@ -108,7 +111,7 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
     this.refresh$.next();
   }
 
-  async update(item: Person) {
+  async update(item: Persona) {
 
     const modalRef = this.getCreazioneModificaDialog();
     modalRef.componentInstance.itemToUpdate = item;
@@ -117,11 +120,36 @@ export class PersoneOrganicoComponent implements OnInit, OnDestroy {
     this.refresh$.next();
   }
 
-  async readonly(item: Person) {
+  async readonly(item: Persona) {
     const modalRef = this.getCreazioneModificaDialog();
     modalRef.componentInstance.readonlyItem = true;
     modalRef.componentInstance.itemToUpdate = item;
     await modalRef.result;
+  }
+
+  async delete(item: Persona) {
+
+    const nome = item.cognome + ' ' + item.nome;
+
+    const modalRef = this.modalService.open(
+      EliminazioneDialog,
+      { size: 'md', centered: true }
+    );
+    modalRef.componentInstance.name = nome;
+    await modalRef.result;
+
+    try {
+
+      await lastValueFrom(
+        this.personeOrganicoService.deleteUser(item.idUtente)
+      );
+
+      this.toaster.show(nome + " eliminato con successo!", { classname: "bg-success text-light" });
+      this.refresh$.next();
+    }
+    catch(ex) {
+      this.toaster.show("Si è verificato un errore durante l'eliminazione di " + nome + ". Contattare il supporto tecnico.", { classname: "bg-danger text-light" });
+    }
   }
 
 }

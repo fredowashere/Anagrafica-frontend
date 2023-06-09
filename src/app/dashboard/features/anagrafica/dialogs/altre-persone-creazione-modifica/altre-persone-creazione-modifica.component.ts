@@ -34,35 +34,35 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     autoFormatter = (po: PrepareObject) => po.descrizione;
 
     form1 = new FormGroup({
-        titolo: new FormControl(1),
+        idTitolo: new FormControl(1),
         cognome: new FormControl("", [ Validators.required ]),
         nome: new FormControl("", [ Validators.required ]),
         azienda: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
         referente: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
-        referenteCliente: new FormControl<boolean>(false),
-        auguri: new FormControl<boolean>(false)
+        referenteTerzaParte: new FormControl<boolean>(false),
+        valido: new FormControl<boolean>(false) // It's auguri... BLAME THE BE!
     });
 
     // Stage 2
     indirizzi: SelectOption[] = [];
 
     form2 = new FormGroup({
-        telefono: new FormControl(""),
-        tecnoCode: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        tecnoCode: new FormControl(""),
+        telefono: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
         cellulare: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
         email: new FormControl("", [ Validators.email ]),
         indirizzo: new FormControl<string | null>(null),
         citta: new FormControl(""),
-        provincia: new FormControl(""),
+        denominazione: new FormControl(""), // It's provincia... BLAME THE BE!
         cap: new FormControl(""),
         note: new FormControl("")
     });
 
     // Stage 3
     form3 = new FormGroup({
-        telefonoPersonale: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
-        cellularePersonale: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
-        emailPersonale: new FormControl("", [ Validators.email ])
+        telefonoPrivata: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        cellularePrivata: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
+        emailPrivata: new FormControl("", [ Validators.email ])
     });
 
     constructor(
@@ -102,11 +102,11 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             .valueChanges
             .subscribe(async indirizzo => {
 
-                const { citta, provincia, cap } = this.form2.controls;
+                const { citta, denominazione, cap } = this.form2.controls;
 
                 if (!indirizzo) {
                     citta.reset();
-                    provincia.reset();
+                    denominazione.reset();
                     cap.reset();
                     return;
                 }
@@ -121,7 +121,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                 if (!indirizzoInfo) return;
 
                 citta.setValue(indirizzoInfo.comune);
-                provincia.setValue(indirizzoInfo.descProvincia);
+                denominazione.setValue(indirizzoInfo.descProvincia);
                 cap.setValue(indirizzoInfo.cap);
             });
 
@@ -160,62 +160,44 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                     .dettaglioContatto(this.itemToUpdate.idUtente)
             );
 
+            this.indirizzi = await lastValueFrom(
+                this.altrePersoneService
+                    .prepareIndirizzo(this.contatto.idTerzaParte)
+                    .pipe(
+                        map(indirizzi =>
+                            indirizzi.map(({ descrizione: value }) =>
+                                ({ value, text: value })
+                            )
+                        )
+                    )
+            );
+
             // Stage 1
-            this.form1.patchValue({
-                cognome: this.contatto.cognome,
-                nome: this.contatto.nome,
-                titolo: this.contatto.idTitolo,
-                referenteCliente: this.contatto.referenteTerzaParte,
-                auguri: this.contatto.valido
-            });
+            this.form1.patchValue({ ...this.contatto });
 
             const azienda = this.aziende
                 .find(azienda => azienda.id === this.contatto!.idTerzaParte);
-            
             if (azienda) {
                 this.form1.controls["azienda"].setValue(azienda);
             }
 
             const ref = this.referenti
                 .find(ref => ref.id === this.contatto!.idReferente);
-            
             if (ref) {
                 this.form1.controls["referente"].setValue(ref);
             }
 
             // Stage 2
-            this.form2.patchValue({
-                tecnoCode: this.contatto.tecnoCode,
-                telefono: this.contatto.telefono,
-                cellulare: this.contatto.cellulare,
-                email: this.contatto.email,
-                citta: this.contatto.comune,
-                provincia: this.contatto.denominazione,
-                cap: this.contatto.cap,
-                note: this.contatto.note
-            });
-
-            const indirizzi = await lastValueFrom(
-                this.altrePersoneService
-                    .prepareIndirizzo(this.contatto.idTerzaParte)
-            );
-
-            this.indirizzi = indirizzi
-                .map(({ descrizione: value }) => ({ value, text: value }));
+            this.form2.patchValue({ ...this.contatto });
 
             const indirizzo = this.indirizzi
                 .find(indirizzo => indirizzo.value === this.contatto!.indirizzo);
-            
             if (indirizzo) {
                 this.form2.controls["indirizzo"].setValue(indirizzo.value);
             }
 
             // Stage 3
-            this.form3.patchValue({
-                telefonoPersonale: this.contatto.telefonoPrivata,
-                cellularePersonale: this.contatto.cellularePrivata,
-                emailPersonale: this.contatto.emailPrivata
-            });
+            this.form3.patchValue({ ...this.contatto });
             
             this.loading = false;
 
@@ -225,32 +207,24 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         }
     }
 
-    getRequestObjectFromForms(): SaveContattoParam {
-        return {
+    getRequest(idUtente: number | null = null) {
 
-            idUtente: null,
-
-            idTitolo:               this.form1.value.titolo!,
-            cognome:                this.form1.value.cognome!,
-            nome:                   this.form1.value.nome!,
-            idTerzaParte:           this.form1.value.azienda?.id!,
-            idReferente:            this.form1.value.referente?.id!,
-            referenteTerzaParte:    this.form1.value.referenteCliente!,
-            valido:                 this.form1.value.auguri!,
-
-            tecnoCode:  this.form2.value.tecnoCode,
-            telefono:   this.form2.value.telefono,
-            cellulare:  this.form2.value.cellulare,
-            email:      this.form2.value.email,
-            indirizzo:  this.form2.value.indirizzo,
-            comune:     this.form2.value.citta,
-            cap:        this.form2.value.cap,
-            note:       this.form2.value.note,
-
-            telefonoPrivata:    this.form3.value.telefonoPersonale,
-            cellularePrivata:   this.form3.value.cellularePersonale,
-            emailPrivata:       this.form3.value.emailPersonale
+        const saveContattoParam: any =  {
+            idUtente,
+            ...this.form1.value,
+            ...this.form2.value,
+            ...this.form3.value
         };
+
+        // Extract ids from objects
+        saveContattoParam.idTerzaParte = saveContattoParam.azienda?.id!;
+        saveContattoParam.idReferente = saveContattoParam.referente?.id!;
+
+        // Delete objects to prevent problems
+        delete saveContattoParam.azienda;
+        delete saveContattoParam.referente;
+
+        return saveContattoParam as SaveContattoParam;
     }
 
     createUpdate() {
@@ -264,12 +238,11 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
         try {
 
-            const requestObject = this.getRequestObjectFromForms();
-            requestObject.idUtente = this.contatto.idUtente;
-
             await lastValueFrom(
                 this.altrePersoneService
-                    .saveContatto(requestObject)
+                    .saveContatto(
+                        this.getRequest(this.contatto.idUtente)
+                    )
             );
 
             this.toaster.show("Contatto modificato con successo!", { classname: "bg-success text-light" });
@@ -288,7 +261,9 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
             await lastValueFrom(
                 this.altrePersoneService
-                    .saveContatto(this.getRequestObjectFromForms())
+                    .saveContatto(
+                        this.getRequest()
+                    )
             );
 
             this.toaster.show("Contatto creato con successo!", { classname: "bg-success text-light" });

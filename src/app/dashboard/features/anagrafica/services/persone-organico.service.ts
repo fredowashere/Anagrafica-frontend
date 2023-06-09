@@ -1,10 +1,9 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Abilitazione, DettaglioPersona, FindPersonParam, Person } from "../models/persona";
+import { Abilitazione, DettaglioPersona, FindPersonParam, Persona, Provincia } from "../models/persona";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/services/auth.service";
 import { PrepareObject } from "../models/prepare-object";
-import { map } from "rxjs";
 import { MiscDataService } from "../../commons/services/miscellaneous-data.service";
 
 // ██████╗ ███████╗██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗    ██╗███╗   ██╗     ██████╗ ██████╗  ██████╗  █████╗ ███╗   ██╗██╗ ██████╗ ██████╗ 
@@ -41,7 +40,7 @@ export class PersoneOrganicoService {
             }
         });
 
-        return this.http.post<Person[]>(url, filter);
+        return this.http.post<Persona[]>(url, filter);
     }
 
     getUtenteAnagraficaById(idUtente: number) {
@@ -67,7 +66,7 @@ export class PersoneOrganicoService {
 
     prepareProvince() {
         const url = `${environment.scaiRoot}/anagrafica-service/prepareProvince`;
-        return this.http.get<PrepareObject[]>(url);
+        return this.http.get<Provincia[]>(url);
     }
 
     prepareStatoCivile() {
@@ -104,4 +103,15 @@ export class PersoneOrganicoService {
         
         return this.http.get<Abilitazione[]>(url, { params });
     }
+
+    salvaModificaInserimento(persona: DettaglioPersona) {
+        const url = `${environment.scaiRoot}/anagrafica-service/salvaModificaInserimento`;
+        return this.http.post(url, persona);
+    }
+
+    deleteUser(idUtente: number) {
+        const url = `${environment.scaiRoot}/anagrafica-service/deleteUser`;
+        return this.http.delete(url, { body: idUtente });
+    }
+
 }

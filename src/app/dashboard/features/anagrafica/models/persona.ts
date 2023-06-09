@@ -9,7 +9,7 @@ export interface FindPersonParam {
     idUtente?: number;
 }
 
-export interface Person {
+export interface Persona {
     nome: string;
     cognome: string;
     idUtente: number;
@@ -44,8 +44,8 @@ export interface DettaglioPersona {
         estensione?: string | null;
     };
     titolo: number;
-    nome: number;
-    cognome: number;
+    nome: string;
+    cognome: string;
     dataDiNascita: string | null,
     provinciaDiNascita: Provincia,
     sesso: string;
@@ -53,8 +53,8 @@ export interface DettaglioPersona {
     luogoNascita: string;
     nazionalita: string;
     codFiscale: string;
-    titoloStudio: number;
-    titoloStudioArea: number;
+    titoloStudio: number | null;
+    titoloStudioArea: number | null;
     indirizzo: string;
     citta: string | null;
     telefono: string;
