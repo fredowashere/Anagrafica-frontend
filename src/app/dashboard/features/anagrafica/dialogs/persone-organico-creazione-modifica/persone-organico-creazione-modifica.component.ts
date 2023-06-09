@@ -8,7 +8,8 @@ import { combineLatest, lastValueFrom, map } from "rxjs";
 import { ToastService } from "src/app/services/toast.service";
 import { PersoneOrganicoService } from "../../services/persone-organico.service";
 import { SelectOption } from "src/app/shared/components/input/input.component";
-import { Abilitazione, Person } from "../../models/persona";
+import { Abilitazione, DettaglioPersona, Person } from "../../models/persona";
+import { AziendaInfo, MiscDataService } from "../../../commons/services/miscellaneous-data.service";
 
 @Component({
     standalone: true,
@@ -20,7 +21,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     @Input("itemToUpdate") itemToUpdate?: Person;
     @Input("readonlyItem") readonlyItem = false;
-    persona?: any;
+    persona?: DettaglioPersona;
     aziendaLookup: { [key: number]: PrepareObject | undefined } = {};
     referenteLookup: { [key: number]: PrepareObject | undefined } = {};
     loading = false;
@@ -95,20 +96,35 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     });
 
     // Stage 3
+    aziende: AziendaInfo[] = [];
+    profili: PrepareObject[] = [];
     abilitazioni: Abilitazione[] = [];
 
-    form3 = new FormGroup({});
+    form3 = new FormGroup({
+        azienda: new FormControl<AziendaInfo | null>(null, [ Validators.required ]),
+        profilo: new FormControl<PrepareObject | null>(null, [ Validators.required ])
+    });
 
     constructor(
         public activeModal: NgbActiveModal,
+        private miscData: MiscDataService,
         private personeOrganicoService: PersoneOrganicoService,
         private toaster: ToastService
     ) {}
 
     async ngOnInit() {
 
+        this.aziende = this.miscData.aziende;
+
         this.loading = true;
-        [ this.titoli, this.statiCivili, this.titoliStudio ] = await lastValueFrom(
+
+        [ 
+            this.titoli,
+            this.statiCivili,
+            this.titoliStudio,
+            this.profili,
+            this.abilitazioni
+        ] = await lastValueFrom(
             combineLatest([
                 this.personeOrganicoService
                     .prepareTitoliInsertPerson()
@@ -128,7 +144,17 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
                             )
                         )
                     ),
-                this.personeOrganicoService.prepareTitoliStudio()
+                this.personeOrganicoService.prepareTitoliStudio(),
+                this.personeOrganicoService.prepareProfiloFunzioni(),
+                this.personeOrganicoService.prepareAbilitazioni()
+                    .pipe(
+                        map(abilitazioni =>
+                            abilitazioni.map(abilitazione => ({
+                                ...abilitazione,
+                                default: true
+                            }))
+                        )
+                    )
             ])
         );
 
@@ -146,13 +172,23 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
                     .getUtenteAnagraficaById(this.itemToUpdate.idUtente)
             );
 
-            this.abilitazioni = this.persona.abilitazioni;
+            // Filter out abilitazioni default from abilitazioni persona
+            const abilitazioniPersona = this.persona.abilitazioni
+                .filter(a =>
+                    !this.abilitazioni
+                        .some(b =>
+                            a.idAzienda === b.idAzienda
+                         && a.idProfilo === b.idProfilo
+                        )
+                )
+                .map(abilitazione => ({ ...abilitazione, default: false }));
+
+            this.abilitazioni.push(...abilitazioniPersona);
             
             this.loading = false;
 
             this.form1.markAllAsTouched();
             this.form2.markAllAsTouched();
-            this.form3.markAllAsTouched();
         }
     }
 
@@ -197,7 +233,38 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         }
     }
 
-    deleteProfilo(profilo: any) {
+    addProfilo() {
 
+        const { azienda, profilo } = this.form3.value;
+        
+        if (!azienda || !profilo) return;
+
+        this.abilitazioni.unshift({
+            aziendaDelGruppo: azienda.descrizione,
+            idAzienda: azienda.idAzienda,
+            idProfilo: profilo.id,
+            profiliFunzioni: profilo.descrizione,
+            aziendaPreferita: true,
+            idLegame: null,
+            progressivo: null,
+            default: false
+        });
+
+        this.abilitazioni = [ ...this.abilitazioni ];
+
+        this.form3.reset();
+    }
+
+    deleteProfilo(a: Abilitazione) {
+
+        const idx = this.abilitazioni
+            .findIndex(b =>
+                b.idAzienda === a.idAzienda
+             && b.idProfilo === a.idProfilo
+            );
+
+        this.abilitazioni.splice(idx, 1);
+        
+        this.abilitazioni = [ ...this.abilitazioni ];
     }
 }

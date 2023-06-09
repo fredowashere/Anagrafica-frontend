@@ -434,13 +434,46 @@
 
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
-                        <div class="flexgrid flexgrid--3 mb-3">
+                        <div class="px-2 mb-2">
+                            Per salvare i cambiamenti ai profili è necessario premere sul tasto <button class="btn btn-sm btn-primary">Salva <i class="bi bi-save-fill"></i></button> in basso
                         </div>
+                        <div class="border border-bottom-0 rounded mb-3">
 
-                        <div class="text-muted px-3 pt-2 mb-2">
-                            Per salvare i cambiamenti ai profili è necessario premere sul tasto "Salva <i class="bi bi-save-fill"></i>" in basso
-                        </div>
-                        <div class="border rounded shadow mb-3">
+                            <div class="py-2 px-3 border-bottom">
+                                <div class="text-muted">Inserimento</div>
+                                <div class="flexgrid flexgrid--3">
+    
+                                    <app-input
+                                        type="autocomplete"
+                                        name="azienda"
+                                        label="Azienda"
+                                        [options]="aziende"
+                                        [ngControl]="form3.controls['azienda']"
+                                        [floatingLabel]="true"
+                                    />
+        
+                                    <app-input
+                                        type="autocomplete"
+                                        name="profilo"
+                                        label="Profilo"
+                                        [options]="profili"
+                                        [ngControl]="form3.controls['profilo']"
+                                        [floatingLabel]="true"
+                                    />
+    
+                                    <div>
+                                        <button
+                                            class="btn btn-outline-primary match-floating-label"
+                                            [disabled]="form3.invalid"
+                                            (click)="addProfilo()"
+                                        >
+                                            <i class="bi bi-plus-circle-fill"></i> Aggiungi
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="text-muted">I ruoli verranno deduplicati automaticamente prima del salvataggio</small>
+                            </div>
+
                             <app-table
                                 #dt
                                 [thead]="thead"
@@ -455,6 +488,7 @@
                                 <ng-template #thead>
                                     <th sortable="aziendaDelGruppo" (sort)="dt.sort($event)">Azienda</th>
                                     <th sortable="profiliFunzioni" (sort)="dt.sort($event)">Profilo</th>
+                                    <th sortable="default" (sort)="dt.sort($event)">Default</th>
                                     <th style="width: 10rem"></th>
                                 </ng-template>
     
@@ -465,11 +499,13 @@
                                     <td data-label="Profilo">
                                         <ngb-highlight [result]="item.profiliFunzioni" [term]="$any(term$ | async)"/>
                                     </td>
+                                    <td data-label="Default">{{ item.default ? "Si" : "No" }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-center">
                                             <button
                                                 type="button"
                                                 class="btn btn-danger shadow"
+                                                [disabled]="item.default"
                                                 (click)="deleteProfilo(item)"
                                             >
                                                 <i class="bi bi-trash3"></i>
@@ -483,7 +519,7 @@
                         <div *ngIf="!readonlyItem" class="text-center pt-3">
                             <button
                                 class="btn btn-lg btn-primary shadow"
-                                [disabled]="form1.invalid || form2.invalid || form3.invalid"
+                                [disabled]="form1.invalid || form2.invalid"
                                 (click)="createUpdate()"
                             >
                                 Salva <i class="bi bi-save-fill"></i>

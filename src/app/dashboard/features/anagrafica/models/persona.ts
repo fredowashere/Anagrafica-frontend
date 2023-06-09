@@ -25,6 +25,7 @@ export interface Abilitazione {
     profiliFunzioni: string;
     idLegame?: number | null;
     aziendaPreferita: boolean;
+    default?: boolean | null;
 }
 
 export interface Provincia {

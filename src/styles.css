@@ -237,6 +237,11 @@ th[sortable].desc::before {
   box-shadow: 0 10px 16px 0 #0004;
 }
 
+/* Button that matches the floating label */
+.btn.match-floating-label {
+  padding: 1rem 1.5rem;
+}
+
 /* Callout */
 .app-callout {
   border: 1px solid rgba(var(--app-gray_100), 1);

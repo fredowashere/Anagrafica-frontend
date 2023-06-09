@@ -1,9 +1,11 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { DettaglioPersona, FindPersonParam, Person } from "../models/persona";
+import { Abilitazione, DettaglioPersona, FindPersonParam, Person } from "../models/persona";
 import { environment } from "src/environments/environment";
 import { AuthService } from "src/app/services/auth.service";
 import { PrepareObject } from "../models/prepare-object";
+import { map } from "rxjs";
+import { MiscDataService } from "../../commons/services/miscellaneous-data.service";
 
 // ██████╗ ███████╗██████╗ ███████╗ ██████╗ ███╗   ██╗███████╗    ██╗███╗   ██╗     ██████╗ ██████╗  ██████╗  █████╗ ███╗   ██╗██╗ ██████╗ ██████╗ 
 // ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔═══██╗████╗  ██║██╔════╝    ██║████╗  ██║    ██╔═══██╗██╔══██╗██╔════╝ ██╔══██╗████╗  ██║██║██╔════╝██╔═══██╗
@@ -19,6 +21,7 @@ export class PersoneOrganicoService {
 
     constructor(
         private authService: AuthService,
+        private miscData: MiscDataService,
         private http: HttpClient
     ) { }
 
@@ -88,8 +91,17 @@ export class PersoneOrganicoService {
     }
 
     prepareAbilitazioni() {
+
         const { idAzienda } = this.authService.user;
-        const url = `${environment.scaiRoot}/anagrafica-service/prepareAbilitazioni?idAzienda=${idAzienda}&aziendaDescr=`
-        return this.http.get(url);
+        const { descrizione } = this.miscData.idAziendaAzienda[idAzienda!]!;
+
+        // Passing aziendaDescr to get it back as aziendaDelGruppo is dumb beyond belief!
+        const params = new HttpParams()
+            .set("idAzienda", idAzienda!)
+            .set("aziendaDescr", descrizione!);
+        
+        const url = `${environment.scaiRoot}/anagrafica-service/prepareAbilitazioni`;
+        
+        return this.http.get<Abilitazione[]>(url, { params });
     }
 }
