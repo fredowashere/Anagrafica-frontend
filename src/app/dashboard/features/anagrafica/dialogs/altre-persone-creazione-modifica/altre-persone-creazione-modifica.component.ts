@@ -30,8 +30,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     // Stage 1
     titoli: SelectOption[] = [];
     aziende: PrepareObject[] = [];
-    autocompleteFormatter = (po: PrepareObject) => po.descrizione;
     referenti: PrepareObject[] = [];
+    autoFormatter = (po: PrepareObject) => po.descrizione;
 
     form1 = new FormGroup({
         titolo: new FormControl(1),
@@ -98,7 +98,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         this.loading = false;
 
         // Setup indirizzoCtrl reactivity (autopopulate citta, provincia and cap when possible)
-        this.form2.controls["indirizzo"].valueChanges
+        this.form2.controls["indirizzo"]
+            .valueChanges
             .subscribe(async indirizzo => {
 
                 const { citta, provincia, cap } = this.form2.controls;
@@ -125,7 +126,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             });
 
         // Setup aziendaCtrl reactivity (get indirizzi, autopopulate indirizzo if possible)
-        this.form1.controls["azienda"].valueChanges
+        this.form1.controls["azienda"]
+            .valueChanges
             .subscribe(async azienda => {
 
                 const indirizzoCtrl = this.form2.controls["indirizzo"];

@@ -10,10 +10,7 @@
     </ng-container>
     <ng-template #showContent>
 
-        <ng-template #autocompleteTemplate let-r="result" let-t="term">
-            <span class="text-muted pe-2">
-                <ngb-highlight [result]="r.id" [term]="t"></ngb-highlight>
-            </span>
+        <ng-template #autoTemplate let-r="result" let-t="term">
             <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
         </ng-template>
 
@@ -118,6 +115,8 @@
                                         name="titoloStudio"
                                         label="Titolo di studio"
                                         [options]="titoliStudio"
+                                        [template]="autoTemplate"
+                                        [formatter]="autoFormatter"
                                         [ngControl]="form1.controls['titoloStudio']"
                                         [floatingLabel]="true"
                                         [disabled]="readonlyItem"
@@ -128,10 +127,11 @@
                                         name="materiaStudio"
                                         label="Materia di studio"
                                         [options]="materieStudio"
+                                        [template]="autoTemplate"
+                                        [formatter]="autoFormatter"
                                         [ngControl]="form1.controls['materiaStudio']"
                                         [floatingLabel]="true"
-                                        [disabled]="readonlyItem"
-                                        helper="Seleziona il titolo di studio"
+                                        [disabled]="readonlyItem || materieStudio.length === 0"
                                     />
                                 </div>
                             </div>
@@ -437,10 +437,10 @@
                         <div class="px-2 mb-2">
                             Per salvare i cambiamenti ai profili è necessario premere sul tasto <button class="btn btn-sm btn-primary">Salva <i class="bi bi-save-fill"></i></button> in basso
                         </div>
-                        <div class="border border-bottom-0 rounded mb-3">
+                        <div class="border border-bottom-0 rounded shadow mb-3">
 
                             <div class="py-2 px-3 border-bottom">
-                                <div class="text-muted">Inserimento</div>
+                                <div class="text-muted">Inserimento profilo</div>
                                 <div class="flexgrid flexgrid--3">
     
                                     <app-input
@@ -448,6 +448,8 @@
                                         name="azienda"
                                         label="Azienda"
                                         [options]="aziende"
+                                        [template]="autoTemplate"
+                                        [formatter]="autoFormatter"
                                         [ngControl]="form3.controls['azienda']"
                                         [floatingLabel]="true"
                                     />
@@ -457,6 +459,8 @@
                                         name="profilo"
                                         label="Profilo"
                                         [options]="profili"
+                                        [template]="autoTemplate"
+                                        [formatter]="autoFormatter"
                                         [ngControl]="form3.controls['profilo']"
                                         [floatingLabel]="true"
                                     />

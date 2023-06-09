@@ -22,8 +22,6 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     @Input("itemToUpdate") itemToUpdate?: Person;
     @Input("readonlyItem") readonlyItem = false;
     persona?: DettaglioPersona;
-    aziendaLookup: { [key: number]: PrepareObject | undefined } = {};
-    referenteLookup: { [key: number]: PrepareObject | undefined } = {};
     loading = false;
 
     booleans = [
@@ -45,6 +43,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     statiCivili: SelectOption[] = [];
     titoliStudio: PrepareObject[] = [];
     materieStudio: PrepareObject[] = [];
+    autoFormatter = (obj: any) => obj.descrizione;
 
     form1 = new FormGroup({
 
@@ -160,7 +159,19 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
         this.loading = false;
 
-        
+        this.form1.controls["titoloStudio"]
+            .valueChanges
+            .subscribe(async titoloStudio => {
+
+                this.form1.controls["materiaStudio"].reset();
+
+                if (titoloStudio) {
+                    this.materieStudio = await lastValueFrom(
+                        this.personeOrganicoService
+                            .prepareTitoliStudioArea(titoloStudio.id)
+                    );
+                }
+            });
 
         // Populate fields from response
         if (this.itemToUpdate) {
@@ -264,7 +275,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
             );
 
         this.abilitazioni.splice(idx, 1);
-        
+
         this.abilitazioni = [ ...this.abilitazioni ];
     }
 }

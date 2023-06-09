@@ -10,7 +10,7 @@
     </ng-container>
     <ng-template #showContent>
 
-        <ng-template #autocompleteTemplate let-r="result" let-t="term">
+        <ng-template #autoTemplate let-r="result" let-t="term">
             <span class="text-muted pe-2">
                 <ngb-highlight [result]="r.id" [term]="t"></ngb-highlight>
             </span>
@@ -64,8 +64,8 @@
                                 name="azienda"
                                 label="Azienda *"
                                 [options]="aziende"
-                                [template]="autocompleteTemplate"
-                                [formatter]="autocompleteFormatter"
+                                [template]="autoTemplate"
+                                [formatter]="autoFormatter"
                                 [limit]="25"
                                 [ngControl]="form1.controls['azienda']"
                                 [floatingLabel]="true"
@@ -77,8 +77,8 @@
                                 name="referente"
                                 label="Referente *"
                                 [options]="referenti"
-                                [template]="autocompleteTemplate"
-                                [formatter]="autocompleteFormatter"
+                                [template]="autoTemplate"
+                                [formatter]="autoFormatter"
                                 [ngControl]="form1.controls['referente']"
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
