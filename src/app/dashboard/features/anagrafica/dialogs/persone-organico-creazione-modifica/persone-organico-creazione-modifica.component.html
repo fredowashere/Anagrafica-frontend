@@ -471,28 +471,26 @@
                         <div class="border border-bottom-0 rounded mb-3">
 
                             <div *ngIf="!readonlyItem" class="py-2 px-3 border-bottom">
-                                <form class="flexgrid flexgrid--3" autocomplete="off" novalidate>
+                                <form class="d-flex flex-wrap justify-content-center gap-3 p-2" autocomplete="off" novalidate>
     
                                     <app-input
                                         type="autocomplete"
                                         name="azienda"
-                                        label="Azienda"
+                                        placeholder="Cerca azienda"
                                         [options]="miscData.aziende"
                                         [template]="autoTemplate"
                                         [formatter]="autoFormatter"
                                         [ngControl]="form3.controls['azienda']"
-                                        [floatingLabel]="true"
                                     />
         
                                     <app-input
                                         type="autocomplete"
                                         name="profilo"
-                                        label="Profilo"
+                                        placeholder="Cerca profilo"
                                         [options]="profili"
                                         [template]="autoTemplate"
                                         [formatter]="autoFormatter"
                                         [ngControl]="form3.controls['profilo']"
-                                        [floatingLabel]="true"
                                     />
     
                                     <div>
@@ -505,7 +503,6 @@
                                         </button>
                                     </div>
                                 </form>
-                                <small class="text-muted">I ruoli verranno deduplicati automaticamente prima del salvataggio</small>
                             </div>
 
                             <app-table

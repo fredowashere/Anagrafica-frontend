@@ -194,6 +194,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
                          && a.idProfilo === b.idProfilo
                         )
                 )
+                .filter(a => a.aziendaPreferita)
                 .map(abilitazione => ({ ...abilitazione, default: false }));
 
             this.abilitazioni.unshift(...abilitazioniPersona);
