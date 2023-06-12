@@ -26,8 +26,9 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     aziendaLookup: { [key: number]: PrepareObject | undefined } = {};
     referenteLookup: { [key: number]: PrepareObject | undefined } = {};
     loading = false;
-    
+
     collapsed: { [key: string]: boolean }= {
+        contatto: false,
         professionali: false,
         personali: true,
         altro: true

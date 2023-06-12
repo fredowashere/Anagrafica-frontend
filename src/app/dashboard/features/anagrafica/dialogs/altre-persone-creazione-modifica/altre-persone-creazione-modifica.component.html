@@ -19,83 +19,95 @@
 
         <form class="p-2" autocomplete="off" novalidate>
 
-            <div class="fw-bold mb-2">Informazioni contatto</div>
-            <div class="flexgrid flexgrid--3">
+            <div class="border rounded p-2 px-3">
+                <button class="btn fw-bold" (click)="collapsed.contatto = !collapsed.contatto">
+                    <i
+                        class="bi"
+                        [class.bi-chevron-expand]="collapsed.contatto"
+                        [class.bi-chevron-contract]="!collapsed.contatto"
+                    ></i>
+                    Informazioni contatto
+                </button>
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.contatto">
 
-                <app-input
-                    type="select"
-                    name="titolo"
-                    label="Titolo *"
-                    [options]="titoli"
-                    [ngControl]="form.controls['idTitolo']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
-
-                <app-input
-                    name="cognome"
-                    label="Cognome *"
-                    [ngControl]="form.controls['cognome']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
-
-                <app-input
-                    name="nome"
-                    label="Nome *"
-                    [ngControl]="form.controls['nome']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
-            </div>
-
-            <div class="flexgrid flexgrid--2">
-
-                <app-input
-                    type="autocomplete"
-                    name="azienda"
-                    label="Azienda *"
-                    [options]="aziende"
-                    [template]="autoTemplate"
-                    [formatter]="autoFormatter"
-                    [limit]="25"
-                    [ngControl]="form.controls['azienda']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
-
-                <app-input
-                    type="autocomplete"
-                    name="referente"
-                    label="Referente *"
-                    [options]="referenti"
-                    [template]="autoTemplate"
-                    [formatter]="autoFormatter"
-                    [ngControl]="form.controls['referente']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
-            </div>
-
-            <div class="d-flex flex-wrap gap-3 p-2">
-
-                <app-input
-                    type="checkbox"
-                    name="referenteCliente"
-                    label="Referente cliente"
-                    [ngControl]="form.controls['referenteTerzaParte']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
-
-                <app-input
-                    type="checkbox"
-                    name="auguri"
-                    label="Auguri"
-                    [ngControl]="form.controls['valido']"
-                    [floatingLabel]="true"
-                    [disabled]="readonlyItem"
-                />
+                    <div class="flexgrid flexgrid--3 mt-2">
+        
+                        <app-input
+                            type="select"
+                            name="titolo"
+                            label="Titolo *"
+                            [options]="titoli"
+                            [ngControl]="form.controls['idTitolo']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+        
+                        <app-input
+                            name="cognome"
+                            label="Cognome *"
+                            [ngControl]="form.controls['cognome']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+        
+                        <app-input
+                            name="nome"
+                            label="Nome *"
+                            [ngControl]="form.controls['nome']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+                    </div>
+        
+                    <div class="flexgrid flexgrid--2">
+        
+                        <app-input
+                            type="autocomplete"
+                            name="azienda"
+                            label="Azienda *"
+                            [options]="aziende"
+                            [template]="autoTemplate"
+                            [formatter]="autoFormatter"
+                            [limit]="25"
+                            [ngControl]="form.controls['azienda']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+        
+                        <app-input
+                            type="autocomplete"
+                            name="referente"
+                            label="Referente *"
+                            [options]="referenti"
+                            [template]="autoTemplate"
+                            [formatter]="autoFormatter"
+                            [ngControl]="form.controls['referente']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+                    </div>
+        
+                    <div class="d-flex flex-wrap gap-3 p-2">
+        
+                        <app-input
+                            type="checkbox"
+                            name="referenteCliente"
+                            label="Referente cliente"
+                            [ngControl]="form.controls['referenteTerzaParte']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+        
+                        <app-input
+                            type="checkbox"
+                            name="auguri"
+                            label="Auguri"
+                            [ngControl]="form.controls['valido']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+                    </div>
+                </div>
             </div>
 
             <div class="border rounded p-2 px-3 mt-3">

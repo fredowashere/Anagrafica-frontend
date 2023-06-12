@@ -25,92 +25,103 @@
 
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
-                        <div class="fw-bold mb-2">Anagrafiche</div>
-                        <div class="flexgrid flexgrid--4">
+                        <div class="border rounded p-2 px-3">
+                            <button class="btn fw-bold" (click)="collapsed.anagrafiche = !collapsed.anagrafiche">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="collapsed.anagrafiche"
+                                    [class.bi-chevron-contract]="!collapsed.anagrafiche"
+                                ></i>
+                                Anagrafiche
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.anagrafiche">
+                                <div class="flexgrid flexgrid--4">
 
-                            <app-input
-                                type="select"
-                                name="titolo"
-                                label="Titolo *"
-                                [options]="titoli"
-                                [ngControl]="form1.controls['titolo']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="cognome"
-                                label="Cognome *"
-                                [ngControl]="form1.controls['cognome']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="nome"
-                                label="Nome *"
-                                [ngControl]="form1.controls['nome']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                type="select"
-                                name="sesso"
-                                label="Sesso *"
-                                [options]="generiBiologici"
-                                [ngControl]="form1.controls['sesso']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
-
-                        <div class="flexgrid flexgrid--3">
-
-                            <app-input
-                                type="date"
-                                name="dataNascita"
-                                label="Data di nascita"
-                                [ngControl]="form1.controls['dataDiNascita']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="luogoNascita"
-                                label="Luogo di nascita"
-                                [ngControl]="form1.controls['luogoNascita']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                type="autocomplete"
-                                name="provinciaNascita"
-                                label="Provincia di nascita"
-                                [options]="province"
-                                [template]="autoTemplate"
-                                [formatter]="autoFormatter"
-                                [ngControl]="form1.controls['provinciaDiNascita']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="codFiscale"
-                                label="Codice fiscale"
-                                [ngControl]="form1.controls['codFiscale']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="nazionalita"
-                                label="Nazionalità"
-                                [ngControl]="form1.controls['nazionalita']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+                                    <app-input
+                                        type="select"
+                                        name="titolo"
+                                        label="Titolo *"
+                                        [options]="titoli"
+                                        [ngControl]="form1.controls['titolo']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="cognome"
+                                        label="Cognome *"
+                                        [ngControl]="form1.controls['cognome']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="nome"
+                                        label="Nome *"
+                                        [ngControl]="form1.controls['nome']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        type="select"
+                                        name="sesso"
+                                        label="Sesso *"
+                                        [options]="generiBiologici"
+                                        [ngControl]="form1.controls['sesso']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+                                </div>
+        
+                                <div class="flexgrid flexgrid--3">
+        
+                                    <app-input
+                                        type="date"
+                                        name="dataNascita"
+                                        label="Data di nascita"
+                                        [ngControl]="form1.controls['dataDiNascita']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="luogoNascita"
+                                        label="Luogo di nascita"
+                                        [ngControl]="form1.controls['luogoNascita']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        type="autocomplete"
+                                        name="provinciaNascita"
+                                        label="Provincia di nascita"
+                                        [options]="province"
+                                        [template]="autoTemplate"
+                                        [formatter]="autoFormatter"
+                                        [ngControl]="form1.controls['provinciaDiNascita']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="codFiscale"
+                                        label="Codice fiscale"
+                                        [ngControl]="form1.controls['codFiscale']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="nazionalita"
+                                        label="Nazionalità"
+                                        [ngControl]="form1.controls['nazionalita']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div class="border rounded p-2 px-3 mt-3">
@@ -313,42 +324,53 @@
 
                     <form class="p-2 my-4" autocomplete="off" novalidate>
 
-                        <div class="fw-bold mb-2">Aziendali</div>
-                        <div class="flexgrid flexgrid--4">
+                        <div class="border rounded p-2 px-3">
+                            <button class="btn fw-bold" (click)="collapsed.aziendali = !collapsed.aziendali">
+                                <i
+                                    class="bi"
+                                    [class.bi-chevron-expand]="collapsed.aziendali"
+                                    [class.bi-chevron-contract]="!collapsed.aziendali"
+                                ></i>
+                                Aziendali
+                            </button>
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.aziendali">
+                                <div class="flexgrid flexgrid--4">
 
-                            <app-input
-                                name="gruppo"
-                                label="Gruppo"
-                                [ngControl]="form2.controls['gruppo']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="numeroBadge"
-                                label="Nr. badge"
-                                [ngControl]="form2.controls['badge']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="tecnoCode"
-                                label="Tecno code"
-                                [ngControl]="form2.controls['technocode']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="uuidWelcome"
-                                label="UUID welcome"
-                                [ngControl]="form2.controls['uuidWelcome']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+                                    <app-input
+                                        name="gruppo"
+                                        label="Gruppo"
+                                        [ngControl]="form2.controls['gruppo']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="numeroBadge"
+                                        label="Nr. badge"
+                                        [ngControl]="form2.controls['badge']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="tecnoCode"
+                                        label="Tecno code"
+                                        [ngControl]="form2.controls['technocode']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="uuidWelcome"
+                                        label="UUID welcome"
+                                        [ngControl]="form2.controls['uuidWelcome']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+                                </div>
+                            </div>
                         </div>
-
+                        
                         <div class="border rounded p-2 px-3 mt-3">
                             <button class="btn fw-bold" (click)="collapsed.contattiProfessionali = !collapsed.contattiProfessionali">
                                 <i

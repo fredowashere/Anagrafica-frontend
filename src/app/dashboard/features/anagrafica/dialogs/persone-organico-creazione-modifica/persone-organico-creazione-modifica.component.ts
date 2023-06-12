@@ -32,6 +32,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     ];
 
     collapsed: { [key: string]: boolean } = {
+        anagrafiche: false,
         contatti: false,
         residenza: true,
         istruzione: true,
