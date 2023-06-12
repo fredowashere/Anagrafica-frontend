@@ -17,283 +17,243 @@
             <ngb-highlight [result]="r.descrizione" [term]="t"></ngb-highlight>
         </ng-template>
 
-        <nav class="wiz" ngbNav #nav="ngbNav" [destroyOnHide]="false">
+        <form class="p-2" autocomplete="off" novalidate>
 
-            <ng-container [ngbNavItem]="1">
-                <a ngbNavLink class="wiz__step">
-                    <div class="wiz__title d-md-none">Step 1</div>
-                    <div class="wiz__descr">Informazioni contatto</div>
-                </a>
-                <ng-template ngbNavContent>
+            <div class="text-muted">Informazioni contatto</div>
+            <div class="flexgrid flexgrid--3">
 
-                    <form class="p-2 my-4" autocomplete="off" novalidate>
+                <app-input
+                    type="select"
+                    name="titolo"
+                    label="Titolo *"
+                    [options]="titoli"
+                    [ngControl]="form.controls['idTitolo']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
 
-                        <div class="flexgrid flexgrid--3">
+                <app-input
+                    name="cognome"
+                    label="Cognome *"
+                    [ngControl]="form.controls['cognome']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
 
-                            <app-input
-                                type="select"
-                                name="titolo"
-                                label="Titolo *"
-                                [options]="titoli"
-                                [ngControl]="form1.controls['idTitolo']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+                <app-input
+                    name="nome"
+                    label="Nome *"
+                    [ngControl]="form.controls['nome']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
+            </div>
 
-                            <app-input
-                                name="cognome"
-                                label="Cognome *"
-                                [ngControl]="form1.controls['cognome']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+            <div class="flexgrid flexgrid--2">
 
-                            <app-input
-                                name="nome"
-                                label="Nome *"
-                                [ngControl]="form1.controls['nome']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
+                <app-input
+                    type="autocomplete"
+                    name="azienda"
+                    label="Azienda *"
+                    [options]="aziende"
+                    [template]="autoTemplate"
+                    [formatter]="autoFormatter"
+                    [limit]="25"
+                    [ngControl]="form.controls['azienda']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
 
-                        <div class="flexgrid flexgrid--2">
+                <app-input
+                    type="autocomplete"
+                    name="referente"
+                    label="Referente *"
+                    [options]="referenti"
+                    [template]="autoTemplate"
+                    [formatter]="autoFormatter"
+                    [ngControl]="form.controls['referente']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
+            </div>
 
-                            <app-input
-                                type="autocomplete"
-                                name="azienda"
-                                label="Azienda *"
-                                [options]="aziende"
-                                [template]="autoTemplate"
-                                [formatter]="autoFormatter"
-                                [limit]="25"
-                                [ngControl]="form1.controls['azienda']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+            <div class="d-flex flex-wrap gap-3 p-2">
 
-                            <app-input
-                                type="autocomplete"
-                                name="referente"
-                                label="Referente *"
-                                [options]="referenti"
-                                [template]="autoTemplate"
-                                [formatter]="autoFormatter"
-                                [ngControl]="form1.controls['referente']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
+                <app-input
+                    type="checkbox"
+                    name="referenteCliente"
+                    label="Referente cliente"
+                    [ngControl]="form.controls['referenteTerzaParte']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
 
-                        <div class="flexgrid">
+                <app-input
+                    type="checkbox"
+                    name="auguri"
+                    label="Auguri"
+                    [ngControl]="form.controls['valido']"
+                    [floatingLabel]="true"
+                    [disabled]="readonlyItem"
+                />
+            </div>
 
-                            <app-input
-                                type="checkbox"
-                                name="referenteCliente"
-                                label="Referente cliente"
-                                [ngControl]="form1.controls['referenteTerzaParte']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+            <div class="border rounded p-2 px-3 mt-3">
+                <button class="btn text-muted" (click)="collapsed.professionali = !collapsed.professionali">
+                    <i
+                        class="bi"
+                        [class.bi-chevron-expand]="collapsed.professionali"
+                        [class.bi-chevron-contract]="!collapsed.professionali"
+                    ></i>
+                    Recapiti professionali
+                </button>
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.professionali">
+                    
+                    <div class="flexgrid flexgrid--4 mt-2">
 
-                            <app-input
-                                type="checkbox"
-                                name="auguri"
-                                label="Auguri"
-                                [ngControl]="form1.controls['valido']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
-                    </form>
+                        <app-input
+                            name="tecnoCode"
+                            label="Tecno code"
+                            [ngControl]="form.controls['tecnoCode']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
 
-                    <div class="text-end">
-                        <button
-                            class="btn btn-outline-primary"
-                            [disabled]="!readonlyItem && form1.invalid"
-                            (click)="nav.select(2)"
-                        >
-                            Prossimo <i class="bi bi-caret-right-fill"></i>
-                        </button>
+                        <app-input
+                            name="telefono"
+                            label="Telefono aziendale"
+                            [ngControl]="form.controls['telefono']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+
+                        <app-input
+                            name="cellulare"
+                            label="Cellulare aziendale"
+                            [ngControl]="form.controls['cellulare']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+
+                        <app-input
+                            name="email"
+                            label="Email aziendale"
+                            [ngControl]="form.controls['email']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
                     </div>
-                </ng-template>
-            </ng-container>
 
-            <ng-container [ngbNavItem]="2" [disabled]="!readonlyItem && form1.invalid">
-                <a ngbNavLink class="wiz__step">
-                    <div class="wiz__title d-md-none">Step 2</div>
-                    <div class="wiz__descr">Recapiti professionali</div>
-                </a>
-                <ng-template ngbNavContent>
+                    <div class="flexgrid flexgrid--4">
 
-                    <form class="p-2 my-4" autocomplete="off" novalidate>
+                        <app-input
+                            type="select"
+                            name="indirizzo"
+                            label="Indirizzo"
+                            [options]="indirizzi"
+                            [ngControl]="form.controls['indirizzo']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem || !indirizzi.length"
+                        />
 
-                        <div class="flexgrid flexgrid--4">
+                        <app-input
+                            name="citta"
+                            label="Città"
+                            [ngControl]="form.controls['citta']"
+                            [floatingLabel]="true"
+                            [disabled]="true"
+                        />
 
-                            <app-input
-                                name="tecnoCode"
-                                label="Tecno code"
-                                [ngControl]="form2.controls['tecnoCode']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+                        <app-input
+                            name="provincia"
+                            label="Provincia"
+                            [ngControl]="form.controls['denominazione']"
+                            [floatingLabel]="true"
+                            [disabled]="true"
+                        />
 
-                            <app-input
-                                name="telefono"
-                                label="Telefono aziendale"
-                                [ngControl]="form2.controls['telefono']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="cellulare"
-                                label="Cellulare aziendale"
-                                [ngControl]="form2.controls['cellulare']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-
-                            <app-input
-                                name="email"
-                                label="Email aziendale"
-                                [ngControl]="form2.controls['email']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
-
-                        <div class="flexgrid flexgrid--4">
-
-                            <app-input
-                                type="select"
-                                name="indirizzo"
-                                label="Indirizzo"
-                                [options]="indirizzi"
-                                [ngControl]="form2.controls['indirizzo']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem || !indirizzi.length"
-                            />
-
-                            <app-input
-                                name="citta"
-                                label="Città"
-                                [ngControl]="form2.controls['citta']"
-                                [floatingLabel]="true"
-                                [disabled]="true"
-                            />
-
-                            <app-input
-                                name="provincia"
-                                label="Provincia"
-                                [ngControl]="form2.controls['denominazione']"
-                                [floatingLabel]="true"
-                                [disabled]="true"
-                            />
-
-                            <app-input
-                                name="cap"
-                                label="CAP"
-                                [ngControl]="form2.controls['cap']"
-                                [floatingLabel]="true"
-                                [disabled]="true"
-                            />
-                        </div>
-
-                        <div class="flexgrid">
-
-                            <app-input
-                                type="textarea"
-                                name="note"
-                                label="Note"
-                                [ngControl]="form2.controls['note']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
-                    </form>
-
-                    <div class="d-flex justify-content-between">
-
-                        <button
-                            class="btn btn-outline-primary"
-                            (click)="nav.select(1)"
-                        >
-                            <i class="bi bi-caret-left-fill"></i> Precedente
-                        </button>
-
-                        <button
-                            class="btn btn-outline-primary"
-                            [disabled]="!readonlyItem && (form1.invalid || form2.invalid)"
-                            (click)="nav.select(3)"
-                        >
-                            Prossimo <i class="bi bi-caret-right-fill"></i>
-                        </button>
+                        <app-input
+                            name="cap"
+                            label="CAP"
+                            [ngControl]="form.controls['cap']"
+                            [floatingLabel]="true"
+                            [disabled]="true"
+                        />
                     </div>
-                </ng-template>
-            </ng-container>
+                </div>
+            </div>
 
-            <ng-container [ngbNavItem]="3" [disabled]="!readonlyItem && (form1.invalid || form2.invalid)">
-                <a ngbNavLink class="wiz__step">
-                    <div class="wiz__title d-md-none">Step 3</div>
-                    <div class="wiz__descr">Recapiti personali</div>
-                </a>
-                <ng-template ngbNavContent>
+            <div class="border rounded p-2 px-3 mt-3">
+                <button class="btn text-muted" (click)="collapsed.personali = !collapsed.personali">
+                    <i
+                        class="bi"
+                        [class.bi-chevron-expand]="collapsed.personali"
+                        [class.bi-chevron-contract]="!collapsed.personali"
+                    ></i>
+                    Recapiti personali
+                </button>
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.personali">
+                    <div class="flexgrid flexgrid--3 mt-2">
 
-                    <form class="p-2 my-4" autocomplete="off" novalidate>
+                        <app-input
+                            name="telefonoPersonale"
+                            label="Telefono personale"
+                            [ngControl]="form.controls['telefonoPrivata']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
 
-                        <div class="flexgrid flexgrid--3 mb-3">
+                        <app-input
+                            name="cellularePersonale"
+                            label="Cellulare personale"
+                            [ngControl]="form.controls['cellularePrivata']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
 
-                            <app-input
-                                name="telefonoPersonale"
-                                label="Telefono personale"
-                                [ngControl]="form3.controls['telefonoPrivata']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+                        <app-input
+                            name="emailPersonale"
+                            label="Email personale"
+                            [ngControl]="form.controls['emailPrivata']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+                    </div>
+                </div>
+            </div>
 
-                            <app-input
-                                name="cellularePersonale"
-                                label="Cellulare personale"
-                                [ngControl]="form3.controls['cellularePrivata']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
+            <div class="border rounded p-2 px-3 my-3">
+                <button class="btn text-muted" (click)="collapsed.altro = !collapsed.altro">
+                    <i
+                        class="bi"
+                        [class.bi-chevron-expand]="collapsed.altro"
+                        [class.bi-chevron-contract]="!collapsed.altro"
+                    ></i>
+                    Altro
+                </button>
+                <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.altro">
+                    <div class="flexgrid mt-2">
+                        <app-input
+                            type="textarea"
+                            name="note"
+                            label="Note"
+                            [ngControl]="form.controls['note']"
+                            [floatingLabel]="true"
+                            [disabled]="readonlyItem"
+                        />
+                    </div>
+                </div>
+            </div>
 
-                            <app-input
-                                name="emailPersonale"
-                                label="Email personale"
-                                [ngControl]="form3.controls['emailPrivata']"
-                                [floatingLabel]="true"
-                                [disabled]="readonlyItem"
-                            />
-                        </div>
-
-                        <div *ngIf="!readonlyItem" class="text-center pt-3">
-                            <button
-                                class="btn btn-lg btn-primary shadow"
-                                [disabled]="form1.invalid || form2.invalid || form3.invalid"
-                                (click)="createUpdate()"
-                            >
-                                Salva <i class="bi bi-save-fill"></i>
-                            </button>
-                        </div>
-                    </form>
-
-                    <button
-                        class="btn btn-outline-primary"
-                        (click)="nav.select(2)"
-                    >
-                        <i class="bi bi-caret-left-fill"></i> Precedente
-                    </button>
-                </ng-template>
-            </ng-container>
-        </nav>
-
-        <div *ngIf="!readonlyItem" class="text-muted px-3 pt-2 mb-2">
-            Per proseguire è necessario compilare tutti i campi obbligatori (*)
-        </div>
-        
-        <div [ngbNavOutlet]="nav"></div>
+            <div *ngIf="!readonlyItem" class="text-center pt-3">
+                <button
+                    class="btn btn-lg btn-primary shadow"
+                    [disabled]="form.invalid || form.invalid || form.invalid"
+                    (click)="createUpdate()"
+                >
+                    Salva <i class="bi bi-save-fill"></i>
+                </button>
+            </div>
+        </form>
     </ng-template>
 </div>

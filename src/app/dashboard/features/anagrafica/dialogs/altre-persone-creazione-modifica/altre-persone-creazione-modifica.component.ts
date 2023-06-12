@@ -26,27 +26,29 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     aziendaLookup: { [key: number]: PrepareObject | undefined } = {};
     referenteLookup: { [key: number]: PrepareObject | undefined } = {};
     loading = false;
+    
+    collapsed: { [key: string]: boolean }= {
+        professionali: false,
+        personali: true,
+        altro: true
+    };
 
-    // Stage 1
     titoli: SelectOption[] = [];
     aziende: PrepareObject[] = [];
     referenti: PrepareObject[] = [];
     autoFormatter = (po: PrepareObject) => po.descrizione;
+    indirizzi: SelectOption[] = [];
 
-    form1 = new FormGroup({
+    form = new FormGroup({
+
         idTitolo: new FormControl(1),
         cognome: new FormControl("", [ Validators.required ]),
         nome: new FormControl("", [ Validators.required ]),
         azienda: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
         referente: new FormControl<PrepareObject | null>(null, [ Validators.required ]),
         referenteTerzaParte: new FormControl<boolean>(false),
-        valido: new FormControl<boolean>(false) // It's auguri... BLAME THE BE!
-    });
+        valido: new FormControl<boolean>(false), // It's auguri... BLAME THE BE!
 
-    // Stage 2
-    indirizzi: SelectOption[] = [];
-
-    form2 = new FormGroup({
         tecnoCode: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
         telefono: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
         cellulare: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
@@ -55,11 +57,8 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         citta: new FormControl(""),
         denominazione: new FormControl(""), // It's provincia... BLAME THE BE!
         cap: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
-        note: new FormControl("")
-    });
+        note: new FormControl(""),
 
-    // Stage 3
-    form3 = new FormGroup({
         telefonoPrivata: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
         cellularePrivata: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
         emailPrivata: new FormControl("", [ Validators.email ])
@@ -72,6 +71,14 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     ) {}
 
     async ngOnInit() {
+
+        // Open all collapse if not opened by default and readonly
+        Object.keys(this.collapsed)
+            .forEach(key =>
+                this.collapsed[key] = (this.collapsed[key] === false)
+                    ? false
+                    : !this.readonlyItem
+            );
 
         this.loading = true;
 
@@ -98,11 +105,11 @@ export class AltrePersoneCreazioneModifica implements OnInit {
         this.loading = false;
 
         // Setup indirizzoCtrl reactivity (autopopulate citta, provincia and cap when possible)
-        this.form2.controls["indirizzo"]
+        this.form.controls["indirizzo"]
             .valueChanges
             .subscribe(async indirizzo => {
 
-                const { citta, denominazione, cap } = this.form2.controls;
+                const { citta, denominazione, cap } = this.form.controls;
 
                 if (!indirizzo) {
                     citta.reset();
@@ -114,7 +121,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                 const indirizzoInfo = await lastValueFrom(
                     this.altrePersoneService.prepareIndirizzoInfo({
                         indirizzo,
-                        idTerzaParte: this.form1.value.azienda?.id!,
+                        idTerzaParte: this.form.value.azienda?.id!,
                     })
                 );
 
@@ -126,11 +133,11 @@ export class AltrePersoneCreazioneModifica implements OnInit {
             });
 
         // Setup aziendaCtrl reactivity (get indirizzi, autopopulate indirizzo if possible)
-        this.form1.controls["azienda"]
+        this.form.controls["azienda"]
             .valueChanges
             .subscribe(async azienda => {
 
-                const indirizzoCtrl = this.form2.controls["indirizzo"];
+                const indirizzoCtrl = this.form.controls["indirizzo"];
 
                 if (!azienda) {
                     indirizzoCtrl.reset();
@@ -172,38 +179,31 @@ export class AltrePersoneCreazioneModifica implements OnInit {
                     )
             );
 
-            // Stage 1
-            this.form1.patchValue({ ...this.contatto });
+            this.form.patchValue({ ...this.contatto });
 
             const azienda = this.aziende
                 .find(azienda => azienda.id === this.contatto!.idTerzaParte);
             if (azienda) {
-                this.form1.controls["azienda"].setValue(azienda);
+                this.form.controls["azienda"].setValue(azienda);
             }
 
             const ref = this.referenti
                 .find(ref => ref.id === this.contatto!.idReferente);
             if (ref) {
-                this.form1.controls["referente"].setValue(ref);
+                this.form.controls["referente"].setValue(ref);
             }
-
-            // Stage 2
-            this.form2.patchValue({ ...this.contatto });
 
             const indirizzo = this.indirizzi
                 .find(indirizzo => indirizzo.value === this.contatto!.indirizzo);
             if (indirizzo) {
-                this.form2.controls["indirizzo"].setValue(indirizzo.value);
+                this.form.controls["indirizzo"].setValue(indirizzo.value);
             }
-
-            // Stage 3
-            this.form3.patchValue({ ...this.contatto });
             
             this.loading = false;
 
-            this.form1.markAllAsTouched();
-            this.form2.markAllAsTouched();
-            this.form3.markAllAsTouched();
+            this.form.markAllAsTouched();
+            this.form.markAllAsTouched();
+            this.form.markAllAsTouched();
         }
     }
 
@@ -211,9 +211,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
         const saveContattoParam: any =  {
             idUtente,
-            ...this.form1.value,
-            ...this.form2.value,
-            ...this.form3.value
+            ...this.form.value
         };
 
         // Extract ids from objects
@@ -234,7 +232,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     async update() {
 
-        if (!this.contatto || this.form1.invalid || this.form2.invalid || this.form3.invalid) return;
+        if (!this.contatto || this.form.invalid) return;
 
         try {
 
@@ -255,7 +253,7 @@ export class AltrePersoneCreazioneModifica implements OnInit {
 
     async create() {
 
-        if (this.form1.invalid || this.form2.invalid || this.form3.invalid) return;
+        if (this.form.invalid || this.form.invalid) return;
 
         try {
 
