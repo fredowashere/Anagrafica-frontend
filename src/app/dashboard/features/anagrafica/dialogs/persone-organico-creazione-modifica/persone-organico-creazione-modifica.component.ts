@@ -37,6 +37,7 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         residenza: true,
         istruzione: true,
         altro: true,
+        aziendali: false,
         contattiProfessionali: false,
         note: true
     }
