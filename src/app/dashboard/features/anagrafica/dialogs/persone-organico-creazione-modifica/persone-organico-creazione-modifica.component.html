@@ -63,6 +63,9 @@
                                 [floatingLabel]="true"
                                 [disabled]="readonlyItem"
                             />
+                        </div>
+
+                        <div class="flexgrid flexgrid--3">
 
                             <app-input
                                 type="date"
@@ -94,6 +97,14 @@
                             />
 
                             <app-input
+                                name="codFiscale"
+                                label="Codice fiscale"
+                                [ngControl]="form1.controls['codFiscale']"
+                                [floatingLabel]="true"
+                                [disabled]="readonlyItem"
+                            />
+
+                            <app-input
                                 name="nazionalita"
                                 label="Nazionalità"
                                 [ngControl]="form1.controls['nazionalita']"
@@ -103,35 +114,47 @@
                         </div>
 
                         <div class="border rounded p-2 px-3 mt-3">
-                            <button class="btn text-muted" (click)="collapsed.istruzione= !collapsed.istruzione">
+                            <button class="btn text-muted" (click)="collapsed.contatti = !collapsed.contatti">
                                 <i
                                     class="bi"
-                                    [class.bi-chevron-expand]="collapsed.istruzione"
-                                    [class.bi-chevron-contract]="!collapsed.istruzione"
+                                    [class.bi-chevron-expand]="collapsed.contatti"
+                                    [class.bi-chevron-contract]="!collapsed.contatti"
                                 ></i>
-                                Istruzione
+                                Contatti
                             </button>
-                            <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.istruzione">
-                                <div class="flexgrid flexgrid--3 mt-2">
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.contatti">
+                                <div class="flexgrid flexgrid--4 mt-2">
         
                                     <app-input
-                                        type="select"
-                                        name="titoloStudio"
-                                        label="Titolo di studio"
-                                        [options]="titoliStudio"
-                                        [ngControl]="form1.controls['titoloStudio']"
+                                        name="telefono"
+                                        label="Telefono personale"
+                                        [ngControl]="form1.controls['telefono']"
                                         [floatingLabel]="true"
                                         [disabled]="readonlyItem"
                                     />
         
                                     <app-input
-                                        type="select"
-                                        name="materiaStudio"
-                                        label="Materia di studio"
-                                        [options]="materieStudio"
-                                        [ngControl]="form1.controls['titoloStudioArea']"
+                                        name="cellulare"
+                                        label="Cellulare personale"
+                                        [ngControl]="form1.controls['cellulare']"
                                         [floatingLabel]="true"
-                                        [disabled]="readonlyItem || materieStudio.length === 0"
+                                        [disabled]="readonlyItem"
+                                    />
+        
+                                    <app-input
+                                        name="email"
+                                        label="Email personale"
+                                        [ngControl]="form1.controls['email']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
+                                    />
+
+                                    <app-input
+                                        name="email"
+                                        label="Email professionale"
+                                        [ngControl]="form1.controls['emailProfessionale']"
+                                        [floatingLabel]="true"
+                                        [disabled]="readonlyItem"
                                     />
                                 </div>
                             </div>
@@ -189,47 +212,35 @@
                         </div>
 
                         <div class="border rounded p-2 px-3 mt-3">
-                            <button class="btn text-muted" (click)="collapsed.contatti = !collapsed.contatti">
+                            <button class="btn text-muted" (click)="collapsed.istruzione= !collapsed.istruzione">
                                 <i
                                     class="bi"
-                                    [class.bi-chevron-expand]="collapsed.contatti"
-                                    [class.bi-chevron-contract]="!collapsed.contatti"
+                                    [class.bi-chevron-expand]="collapsed.istruzione"
+                                    [class.bi-chevron-contract]="!collapsed.istruzione"
                                 ></i>
-                                Contatti
+                                Istruzione
                             </button>
-                            <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.contatti">
-                                <div class="flexgrid flexgrid--4 mt-2">
+                            <div #collapse="ngbCollapse" [(ngbCollapse)]="collapsed.istruzione">
+                                <div class="flexgrid flexgrid--3 mt-2">
         
                                     <app-input
-                                        name="telefono"
-                                        label="Telefono personale"
-                                        [ngControl]="form1.controls['telefono']"
+                                        type="select"
+                                        name="titoloStudio"
+                                        label="Titolo di studio"
+                                        [options]="titoliStudio"
+                                        [ngControl]="form1.controls['titoloStudio']"
                                         [floatingLabel]="true"
                                         [disabled]="readonlyItem"
                                     />
         
                                     <app-input
-                                        name="cellulare"
-                                        label="Cellulare personale"
-                                        [ngControl]="form1.controls['cellulare']"
+                                        type="select"
+                                        name="materiaStudio"
+                                        label="Materia di studio"
+                                        [options]="materieStudio"
+                                        [ngControl]="form1.controls['titoloStudioArea']"
                                         [floatingLabel]="true"
-                                        [disabled]="readonlyItem"
-                                    />
-        
-                                    <app-input
-                                        name="email"
-                                        label="Email personale"
-                                        [ngControl]="form1.controls['email']"
-                                        [floatingLabel]="true"
-                                        [disabled]="readonlyItem"
-                                    />
-
-                                    <app-input
-                                        name="email"
-                                        label="Email professionale"
-                                        [ngControl]="form1.controls['emailProfessionale']"
-                                        [floatingLabel]="true"
-                                        [disabled]="readonlyItem"
+                                        [disabled]="readonlyItem || materieStudio.length === 0"
                                     />
                                 </div>
                             </div>

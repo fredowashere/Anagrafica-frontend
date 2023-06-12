@@ -11,6 +11,7 @@ import { SelectOption } from "src/app/shared/components/input/input.component";
 import { Abilitazione, DettaglioPersona, Persona, Provincia } from "../../models/persona";
 import { AziendaInfo, MiscDataService } from "../../../commons/services/miscellaneous-data.service";
 import { AuthService } from "src/app/services/auth.service";
+import { cellulareRegExp, telefonoRegExp } from "src/app/utils/regex";
 
 @Component({
     standalone: true,
@@ -31,11 +32,11 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
     ];
 
     collapsed: { [key: string]: boolean } = {
-        istruzione: true,
+        contatti: false,
         residenza: true,
-        contatti: true,
+        istruzione: true,
         altro: true,
-        contattiProfessionali: true,
+        contattiProfessionali: false,
         note: true
     }
 
@@ -60,17 +61,17 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         luogoNascita: new FormControl(""),
         provinciaDiNascita: new FormControl<Provincia | null>(null),
         nazionalita: new FormControl(""),
-        codFiscale: new FormControl(""),
+        codFiscale: new FormControl("", [ Validators.pattern(/^[a-zA-Z0-9]{16}$/) ]),
         titoloStudio: new FormControl<number | null>(null),
         titoloStudioArea: new FormControl<number | null>(null),
         indirizzo: new FormControl(""),
-        cap: new FormControl(""),
+        cap: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
         citta: new FormControl(""),
         provinciaDiResidenza: new FormControl<Provincia | null>(null),
-        telefono: new FormControl(""),
-        cellulare: new FormControl(""),
-        email: new FormControl(""),
-        emailProfessionale: new FormControl(""),
+        telefono: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        cellulare: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
+        email: new FormControl("", [ Validators.email ]),
+        emailProfessionale: new FormControl("", [ Validators.email ]),
         statoCivile: new FormControl<number | null>(null),
         socioScai: new FormControl<boolean>(false),
         datiRiservati: new FormControl<boolean>(false)
@@ -78,14 +79,14 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     // Stage 2
     form2 = new FormGroup({
-        technocode: new FormControl(""),
+        technocode: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
         uuidWelcome: new FormControl(""),
-        badge: new FormControl(""),
+        badge: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
         gruppo: new FormControl(""),
-        telefonoProfessionale: new FormControl(""),
-        fax: new FormControl(""),
-        cellulareProfessionale: new FormControl(""),
-        emailAziendaleIntranet: new FormControl(""),
+        telefonoProfessionale: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        fax: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
+        cellulareProfessionale: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
+        emailAziendaleIntranet: new FormControl("", [ Validators.email ]),
         descrizioneSedeLavoro: new FormControl(""),
         descrizioneUfficio: new FormControl(""),
         noteSocioScai: new FormControl("")
@@ -110,9 +111,13 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
 
     async ngOnInit() {
 
-        // Open all collapse if readonly
+        // Open all collapse if not opened by default and readonly
         Object.keys(this.collapsed)
-            .forEach(key => this.collapsed[key] = !this.readonlyItem);
+            .forEach(key =>
+                this.collapsed[key] = (this.collapsed[key] === false)
+                    ? false
+                    : !this.readonlyItem
+            );
 
         this.loading = true;
 
@@ -286,6 +291,17 @@ export class PersoneOrganicoCreazioneModifica implements OnInit {
         const { azienda, profilo } = this.form3.value;
         
         if (!azienda || !profilo) return;
+
+        const idAziendaidProfiloAbilitazione = this.abilitazioni
+            .reduce((abilMap, abil) =>
+                (abilMap[abil.idAzienda + ";" + abil.idProfilo] = abil, abilMap),
+                {} as { [key: string]: Abilitazione }
+            );
+
+        if (idAziendaidProfiloAbilitazione[azienda.idAzienda + ";" + profilo.id]) {
+            this.toaster.show("L'abilitazione scelta è già presente.", { classname: "bg-danger text-light" });
+            return;
+        }
 
         this.abilitazioni.unshift({
             aziendaDelGruppo: azienda.descrizione,

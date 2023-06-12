@@ -47,14 +47,14 @@ export class AltrePersoneCreazioneModifica implements OnInit {
     indirizzi: SelectOption[] = [];
 
     form2 = new FormGroup({
-        tecnoCode: new FormControl(""),
+        tecnoCode: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
         telefono: new FormControl("", [ Validators.pattern(telefonoRegExp) ]),
         cellulare: new FormControl("", [ Validators.pattern(cellulareRegExp) ]),
         email: new FormControl("", [ Validators.email ]),
         indirizzo: new FormControl<string | null>(null),
         citta: new FormControl(""),
         denominazione: new FormControl(""), // It's provincia... BLAME THE BE!
-        cap: new FormControl(""),
+        cap: new FormControl("", [ Validators.pattern(/^\d+$/) ]),
         note: new FormControl("")
     });
 
